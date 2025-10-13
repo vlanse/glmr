@@ -1,0 +1,219 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "mr/v1/mr.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "MergeRequests"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/mr/v1/GetMergeRequests": {
+      "post": {
+        "operationId": "MergeRequests_GetMergeRequests",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetMergeRequestsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetMergeRequestsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MergeRequests"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "GetMergeRequestsRequestFilter": {
+      "type": "object",
+      "properties": {
+        "skipApprovedByMe": {
+          "type": "boolean"
+        },
+        "showOnlyMine": {
+          "type": "boolean"
+        }
+      }
+    },
+    "GetMergeRequestsResponseGroup": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "mergeRequests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/GetMergeRequestsResponseMergeRequest"
+          }
+        }
+      }
+    },
+    "GetMergeRequestsResponseMergeRequest": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "#/definitions/MergeRequestProject"
+        },
+        "url": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "author": {
+          "$ref": "#/definitions/MergeRequestUser"
+        },
+        "status": {
+          "$ref": "#/definitions/GetMergeRequestsResponseMergeRequestStatus"
+        },
+        "approvedBy": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/MergeRequestUser"
+          }
+        },
+        "comments": {
+          "$ref": "#/definitions/MergeRequestComments"
+        },
+        "age": {
+          "type": "string"
+        },
+        "approvedBefore": {
+          "type": "boolean"
+        }
+      }
+    },
+    "GetMergeRequestsResponseMergeRequestStatus": {
+      "type": "object",
+      "properties": {
+        "conflict": {
+          "type": "boolean"
+        },
+        "pipelineFailed": {
+          "type": "boolean"
+        },
+        "ready": {
+          "type": "boolean"
+        },
+        "outdated": {
+          "type": "boolean"
+        },
+        "pending": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MergeRequestComments": {
+      "type": "object",
+      "properties": {
+        "unresolvedCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "resolvedCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "MergeRequestProject": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "MergeRequestUser": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "trusted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "googlerpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "v1GetMergeRequestsRequest": {
+      "type": "object",
+      "properties": {
+        "filter": {
+          "$ref": "#/definitions/GetMergeRequestsRequestFilter"
+        }
+      }
+    },
+    "v1GetMergeRequestsResponse": {
+      "type": "object",
+      "properties": {
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/GetMergeRequestsResponseGroup"
+          }
+        }
+      }
+    }
+  }
+}
