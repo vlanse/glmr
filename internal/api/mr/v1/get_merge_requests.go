@@ -8,21 +8,18 @@ import (
 	"github.com/samber/lo"
 	api "github.com/vlanse/glmr/internal/pb/mr/v1"
 	"github.com/vlanse/glmr/internal/service/mr"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
-var mrg []mr.MergeRequestsGroup // TODO
-
 func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequestsRequest) (*api.GetMergeRequestsResponse, error) {
-	//if mrg == nil {
-	var err error
-	mrg, err = s.mrSvc.GetMergeRequests(ctx, mr.Filter{
+	mrg, err := s.mrSvc.GetMergeRequests(ctx, mr.Filter{
 		SkipApprovedByMe: req.GetFilter().GetSkipApprovedByMe(),
 		ShowOnlyMine:     req.GetFilter().GetShowOnlyMine(),
 	})
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.FailedPrecondition, err.Error())
 	}
-	//}
 
 	res := &api.GetMergeRequestsResponse{
 		Groups: lo.Map(mrg, func(item mr.MergeRequestsGroup, _ int) *api.GetMergeRequestsResponse_Group {
