@@ -115,6 +115,7 @@ type GetMergeRequestsRequest_Filter struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	SkipApprovedByMe bool                   `protobuf:"varint,1,opt,name=skipApprovedByMe,proto3" json:"skipApprovedByMe,omitempty"`
 	ShowOnlyMine     bool                   `protobuf:"varint,2,opt,name=showOnlyMine,proto3" json:"showOnlyMine,omitempty"`
+	ButStillShowMine bool                   `protobuf:"varint,3,opt,name=butStillShowMine,proto3" json:"butStillShowMine,omitempty"` // when "skip approved by me" is enabled, this forces to include mine MRs in the list
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -159,6 +160,13 @@ func (x *GetMergeRequestsRequest_Filter) GetSkipApprovedByMe() bool {
 func (x *GetMergeRequestsRequest_Filter) GetShowOnlyMine() bool {
 	if x != nil {
 		return x.ShowOnlyMine
+	}
+	return false
+}
+
+func (x *GetMergeRequestsRequest_Filter) GetButStillShowMine() bool {
+	if x != nil {
+		return x.ButStillShowMine
 	}
 	return false
 }
@@ -559,12 +567,13 @@ var File_mr_v1_mr_proto protoreflect.FileDescriptor
 
 const file_mr_v1_mr_proto_rawDesc = "" +
 	"\n" +
-	"\x0emr/v1/mr.proto\x12\x05mr.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb2\x01\n" +
+	"\x0emr/v1/mr.proto\x12\x05mr.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xdf\x01\n" +
 	"\x17GetMergeRequestsRequest\x12=\n" +
-	"\x06filter\x18\x01 \x01(\v2%.mr.v1.GetMergeRequestsRequest.FilterR\x06filter\x1aX\n" +
+	"\x06filter\x18\x01 \x01(\v2%.mr.v1.GetMergeRequestsRequest.FilterR\x06filter\x1a\x84\x01\n" +
 	"\x06Filter\x12*\n" +
 	"\x10skipApprovedByMe\x18\x01 \x01(\bR\x10skipApprovedByMe\x12\"\n" +
-	"\fshowOnlyMine\x18\x02 \x01(\bR\fshowOnlyMine\"\xc9\b\n" +
+	"\fshowOnlyMine\x18\x02 \x01(\bR\fshowOnlyMine\x12*\n" +
+	"\x10butStillShowMine\x18\x03 \x01(\bR\x10butStillShowMine\"\xc9\b\n" +
 	"\x18GetMergeRequestsResponse\x12=\n" +
 	"\x06groups\x18\x01 \x03(\v2%.mr.v1.GetMergeRequestsResponse.GroupR\x06groups\x1a\xfc\x06\n" +
 	"\fMergeRequest\x12N\n" +

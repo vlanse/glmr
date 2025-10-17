@@ -58,6 +58,10 @@
         },
         "showOnlyMine": {
           "type": "boolean"
+        },
+        "butStillShowMine": {
+          "type": "boolean",
+          "title": "when \"skip approved by me\" is enabled, this forces to include mine MRs in the list"
         }
       }
     },

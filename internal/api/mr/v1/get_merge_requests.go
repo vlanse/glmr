@@ -15,6 +15,7 @@ import (
 func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequestsRequest) (*api.GetMergeRequestsResponse, error) {
 	mrg, err := s.mrSvc.GetMergeRequests(ctx, mr.Filter{
 		SkipApprovedByMe: req.GetFilter().GetSkipApprovedByMe(),
+		ButStillShowMine: req.GetFilter().GetButStillShowMine(),
 		ShowOnlyMine:     req.GetFilter().GetShowOnlyMine(),
 	})
 	if err != nil {

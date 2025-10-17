@@ -18,6 +18,7 @@ message GetMergeRequestsRequest {
   message Filter {
     bool skipApprovedByMe = 1;
     bool showOnlyMine = 2;
+    bool butStillShowMine = 3; // when "skip approved by me" is enabled, this forces to include mine MRs in the list
   }
   Filter filter = 1;
 }

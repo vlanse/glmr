@@ -98,6 +98,9 @@ func filterMergeRequests(projects []Project, currentUsername string, filter Filt
 	for i, project := range projects {
 		projects[i].MergeRequests = lo.Filter(project.MergeRequests, func(item MergeRequest, _ int) bool {
 			if filter.SkipApprovedByMe {
+				if filter.ButStillShowMine && item.Author.Username == currentUsername {
+					return true
+				}
 				if lo.ContainsBy(item.Approvals, func(item Approval) bool {
 					return item.User.Username == currentUsername
 				}) {

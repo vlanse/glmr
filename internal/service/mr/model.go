@@ -4,6 +4,7 @@ import "time"
 
 type Filter struct {
 	SkipApprovedByMe bool
+	ButStillShowMine bool
 	ShowOnlyMine     bool
 }
 
