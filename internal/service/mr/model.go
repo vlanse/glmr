@@ -85,7 +85,12 @@ type Project struct {
 	ApprovalRules []ApprovalRule
 }
 
+type Summary struct {
+	Total   int
+	Overdue int
+}
 type MergeRequestsGroup struct {
 	GroupName     string
 	MergeRequests []MergeRequest
+	Summary       Summary
 }

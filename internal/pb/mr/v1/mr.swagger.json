@@ -77,6 +77,9 @@
             "type": "object",
             "$ref": "#/definitions/GetMergeRequestsResponseMergeRequest"
           }
+        },
+        "summary": {
+          "$ref": "#/definitions/GroupSummary"
         }
       }
     },
@@ -133,6 +136,19 @@
         },
         "pending": {
           "type": "boolean"
+        }
+      }
+    },
+    "GroupSummary": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "overdue": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

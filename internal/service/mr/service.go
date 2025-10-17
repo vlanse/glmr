@@ -71,8 +71,6 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 		return nil, err
 	}
 
-	projects = filterMergeRequests(projects, currentUserName, filter)
-
 	projects = fillOwners(projects)
 
 	projects = sortApprovers(currentUserName, projects)
@@ -83,20 +81,36 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 
 	projects = setApprovedBefore(currentUserName, projects)
 
-	res := groupMergeRequests(projects)
+	groups := groupMergeRequests(projects)
 
-	for _, g := range res {
+	groups = fillGroupSummaries(groups)
+
+	groups = filterMergeRequests(groups, currentUserName, filter)
+
+	for _, g := range groups {
 		sort.SliceStable(g.MergeRequests, func(i, j int) bool {
 			return g.MergeRequests[i].CreatedAt.Before(g.MergeRequests[j].CreatedAt)
 		})
 	}
 
-	return res, nil
+	return groups, nil
 }
 
-func filterMergeRequests(projects []Project, currentUsername string, filter Filter) []Project {
-	for i, project := range projects {
-		projects[i].MergeRequests = lo.Filter(project.MergeRequests, func(item MergeRequest, _ int) bool {
+func fillGroupSummaries(groups []MergeRequestsGroup) []MergeRequestsGroup {
+	for i, g := range groups {
+		for _, mr := range g.MergeRequests {
+			groups[i].Summary.Total++
+			if mr.Status.Outdated {
+				groups[i].Summary.Overdue++
+			}
+		}
+	}
+	return groups
+}
+
+func filterMergeRequests(groups []MergeRequestsGroup, currentUsername string, filter Filter) []MergeRequestsGroup {
+	for i, group := range groups {
+		groups[i].MergeRequests = lo.Filter(group.MergeRequests, func(item MergeRequest, _ int) bool {
 			if filter.SkipApprovedByMe {
 				if filter.ButStillShowMine && item.Author.Username == currentUsername {
 					return true
@@ -115,7 +129,7 @@ func filterMergeRequests(projects []Project, currentUsername string, filter Filt
 			return true
 		})
 	}
-	return projects
+	return groups
 }
 
 func fillOwners(projects []Project) []Project {

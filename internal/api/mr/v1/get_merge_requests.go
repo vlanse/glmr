@@ -26,6 +26,10 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 		Groups: lo.Map(mrg, func(item mr.MergeRequestsGroup, _ int) *api.GetMergeRequestsResponse_Group {
 			return &api.GetMergeRequestsResponse_Group{
 				Name: item.GroupName,
+				Summary: &api.GetMergeRequestsResponse_Group_Summary{
+					Total:   int32(item.Summary.Total),
+					Overdue: int32(item.Summary.Overdue),
+				},
 				MergeRequests: lo.Map(
 					item.MergeRequests,
 					func(item mr.MergeRequest, _ int) *api.GetMergeRequestsResponse_MergeRequest {

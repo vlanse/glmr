@@ -60,8 +60,14 @@ message GetMergeRequestsResponse {
   }
 
   message Group {
+    message Summary {
+      int32 total = 1;
+      int32 overdue = 2;
+    }
+
     string name = 1;
     repeated MergeRequest mergeRequests = 2;
+    Summary summary = 3;
   }
 
   repeated Group groups = 1;
