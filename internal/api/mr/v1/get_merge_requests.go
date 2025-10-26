@@ -35,8 +35,10 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 					func(item mr.MergeRequest, _ int) *api.GetMergeRequestsResponse_MergeRequest {
 						return &api.GetMergeRequestsResponse_MergeRequest{
 							Description: item.Description,
+							Iid:         item.IID,
 							Project: &api.GetMergeRequestsResponse_MergeRequest_Project{
 								Name: item.Project.Name,
+								Id:   item.Project.ID,
 							},
 							Url: item.URL,
 							Author: &api.GetMergeRequestsResponse_MergeRequest_User{

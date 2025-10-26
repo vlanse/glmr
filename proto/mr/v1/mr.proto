@@ -33,6 +33,7 @@ message GetMergeRequestsResponse {
 
     message Project {
       string name = 2;
+      int64 id = 1;
     }
 
     message Status {
@@ -57,6 +58,7 @@ message GetMergeRequestsResponse {
     Comments comments = 7;
     string age = 8;
     bool approvedBefore = 9;
+    int64 iid = 10;
   }
 
   message Group {

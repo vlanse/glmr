@@ -182,6 +182,7 @@ type GetMergeRequestsResponse_MergeRequest struct {
 	Comments       *GetMergeRequestsResponse_MergeRequest_Comments `protobuf:"bytes,7,opt,name=comments,proto3" json:"comments,omitempty"`
 	Age            string                                          `protobuf:"bytes,8,opt,name=age,proto3" json:"age,omitempty"`
 	ApprovedBefore bool                                            `protobuf:"varint,9,opt,name=approvedBefore,proto3" json:"approvedBefore,omitempty"`
+	Iid            int64                                           `protobuf:"varint,10,opt,name=iid,proto3" json:"iid,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -277,6 +278,13 @@ func (x *GetMergeRequestsResponse_MergeRequest) GetApprovedBefore() bool {
 		return x.ApprovedBefore
 	}
 	return false
+}
+
+func (x *GetMergeRequestsResponse_MergeRequest) GetIid() int64 {
+	if x != nil {
+		return x.Iid
+	}
+	return 0
 }
 
 type GetMergeRequestsResponse_Group struct {
@@ -402,6 +410,7 @@ func (x *GetMergeRequestsResponse_MergeRequest_User) GetTrusted() bool {
 type GetMergeRequestsResponse_MergeRequest_Project struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -441,6 +450,13 @@ func (x *GetMergeRequestsResponse_MergeRequest_Project) GetName() string {
 		return x.Name
 	}
 	return ""
+}
+
+func (x *GetMergeRequestsResponse_MergeRequest_Project) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
 }
 
 type GetMergeRequestsResponse_MergeRequest_Status struct {
@@ -633,9 +649,9 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"\x06Filter\x12*\n" +
 	"\x10skipApprovedByMe\x18\x01 \x01(\bR\x10skipApprovedByMe\x12\"\n" +
 	"\fshowOnlyMine\x18\x02 \x01(\bR\fshowOnlyMine\x12*\n" +
-	"\x10butStillShowMine\x18\x03 \x01(\bR\x10butStillShowMine\"\xce\t\n" +
+	"\x10butStillShowMine\x18\x03 \x01(\bR\x10butStillShowMine\"\xf0\t\n" +
 	"\x18GetMergeRequestsResponse\x12=\n" +
-	"\x06groups\x18\x01 \x03(\v2%.mr.v1.GetMergeRequestsResponse.GroupR\x06groups\x1a\xfc\x06\n" +
+	"\x06groups\x18\x01 \x03(\v2%.mr.v1.GetMergeRequestsResponse.GroupR\x06groups\x1a\x9e\a\n" +
 	"\fMergeRequest\x12N\n" +
 	"\aproject\x18\x01 \x01(\v24.mr.v1.GetMergeRequestsResponse.MergeRequest.ProjectR\aproject\x12\x10\n" +
 	"\x03url\x18\x02 \x01(\tR\x03url\x12 \n" +
@@ -647,13 +663,16 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"approvedBy\x12Q\n" +
 	"\bcomments\x18\a \x01(\v25.mr.v1.GetMergeRequestsResponse.MergeRequest.CommentsR\bcomments\x12\x10\n" +
 	"\x03age\x18\b \x01(\tR\x03age\x12&\n" +
-	"\x0eapprovedBefore\x18\t \x01(\bR\x0eapprovedBefore\x1aZ\n" +
+	"\x0eapprovedBefore\x18\t \x01(\bR\x0eapprovedBefore\x12\x10\n" +
+	"\x03iid\x18\n" +
+	" \x01(\x03R\x03iid\x1aZ\n" +
 	"\x04User\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1c\n" +
 	"\tavatarUrl\x18\x02 \x01(\tR\tavatarUrl\x12\x18\n" +
-	"\atrusted\x18\x03 \x01(\bR\atrusted\x1a\x1d\n" +
+	"\atrusted\x18\x03 \x01(\bR\atrusted\x1a-\n" +
 	"\aProject\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x1a\x98\x01\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x1a\x98\x01\n" +
 	"\x06Status\x12\x1a\n" +
 	"\bconflict\x18\x01 \x01(\bR\bconflict\x12&\n" +
 	"\x0epipelineFailed\x18\x02 \x01(\bR\x0epipelineFailed\x12\x14\n" +
