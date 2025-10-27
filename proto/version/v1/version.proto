@@ -1,0 +1,28 @@
+syntax = "proto3";
+package mr.v1;
+option go_package = "github.com/vlanse/glmr/proto/mr/v1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service Version {
+  rpc GetVersion(GetVersionRequest) returns (GetVersionResponse) {
+    option (google.api.http) = {
+      post: "/version/v1/GetVersion"
+      body: "*"
+    };
+  }
+}
+
+message GetVersionRequest {
+}
+
+message GetVersionResponse {
+  message Update {
+    string version = 1;
+    string error = 2;
+  }
+
+  string currentVersion = 1;
+  Update update = 2;
+}

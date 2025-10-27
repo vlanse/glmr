@@ -58,7 +58,6 @@ func serveGrpcGateway(mux *runtime.ServeMux) error {
 		func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 			w.Header().Set("Content-Type", "application/json")
 			_, _ = w.Write(swaggerData)
-			w.WriteHeader(http.StatusOK)
 		},
 	); err != nil {
 		return err

@@ -12,7 +12,9 @@ tool (
 )
 
 require (
+	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/alitto/pond/v2 v2.5.0
+	github.com/google/go-github/v76 v76.0.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3
 	github.com/samber/lo v1.51.0
 	github.com/swaggest/swgui v1.8.4
@@ -76,6 +78,7 @@ require (
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/google/cel-go v0.26.1 // indirect
 	github.com/google/go-containerregistry v0.20.6 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

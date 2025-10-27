@@ -11,6 +11,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/samber/lo"
 	mrV1 "github.com/vlanse/glmr/internal/api/mr/v1"
+	versionV1 "github.com/vlanse/glmr/internal/api/version/v1"
 	"github.com/vlanse/glmr/internal/service/gitlab"
 	"github.com/vlanse/glmr/internal/service/mr"
 	"google.golang.org/grpc"
@@ -56,14 +57,14 @@ func (a *App) initConfig(_ context.Context) error {
 		func() (string, error) {
 			ex, err := os.Executable()
 			if err != nil {
-				return "", fmt.Errorf("не удалось получить путь к исполняемому файлу: %w", err)
+				return "", fmt.Errorf("could not get path to executable: %w", err)
 			}
 			return filepath.Dir(ex), nil
 		},
 		func() (string, error) {
 			curUser, err := user.Current()
 			if err != nil {
-				return "", fmt.Errorf("ошибка получения контекста текущего пользователя ОС: %w", err)
+				return "", fmt.Errorf("error getting current OS user context: %w", err)
 			}
 			return curUser.HomeDir, nil
 		},
@@ -75,12 +76,12 @@ func (a *App) initConfig(_ context.Context) error {
 		if path, err = pathGetter(); err == nil {
 			configPath := filepath.Join(path, configFilename)
 			if a.cfg, err = loadConfig(configPath); err != nil {
-				return fmt.Errorf("ошибка открытия файла настроек: %w", err)
+				return fmt.Errorf("error opening settings file: %w", err)
 			}
 			return nil
 		}
 	}
-	return fmt.Errorf("ошибка открытия файла конфигурации: %w", err)
+	return fmt.Errorf("error opening settings file: %w", err)
 }
 
 func (a *App) initServices(_ context.Context) error {
@@ -113,8 +114,13 @@ func (a *App) initAPI(ctx context.Context) error {
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
 	if err := mrV1.New(a.mrSvc).Register(ctx, a.grpcServer, a.mux, grpcServerEndpoint, opts); err != nil {
-		return fmt.Errorf("инициализация mr v1 API: %w", err)
+		return fmt.Errorf("init mr v1 API: %w", err)
 	}
+
+	if err := versionV1.New().Register(ctx, a.grpcServer, a.mux, grpcServerEndpoint, opts); err != nil {
+		return fmt.Errorf("init version v1 API: %w", err)
+	}
+
 	return nil
 }
 
