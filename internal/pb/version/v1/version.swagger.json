@@ -1,0 +1,107 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "version/v1/version.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Version"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/version/v1/GetVersion": {
+      "post": {
+        "operationId": "Version_GetVersion",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetVersionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetVersionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Version"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "GetVersionResponseUpdate": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1GetVersionRequest": {
+      "type": "object"
+    },
+    "v1GetVersionResponse": {
+      "type": "object",
+      "properties": {
+        "currentVersion": {
+          "type": "string"
+        },
+        "update": {
+          "$ref": "#/definitions/GetVersionResponseUpdate"
+        }
+      }
+    }
+  }
+}

@@ -42,7 +42,7 @@ func CheckForUpdates(ctx context.Context) (string, error) {
 	}
 
 	if updateVersion.GreaterThan(currentVersion) {
-		return updateVersion.String(), nil
+		return fmt.Sprintf("v%s", updateVersion.String()), nil
 	}
 
 	return "", nil
