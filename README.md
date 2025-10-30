@@ -36,6 +36,8 @@ Start the program
 
 Web interface address will be shown in stdout
 
+<img width="1240" height="937" alt="Screenshot 2025-10-29 at 15 06 19" src="https://github.com/user-attachments/assets/a5e2ba36-e109-45cd-bba9-8cc9f698e43d" />
+
 
 ## Development notes
 
