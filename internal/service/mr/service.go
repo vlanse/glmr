@@ -111,20 +111,26 @@ func fillGroupSummaries(groups []MergeRequestsGroup) []MergeRequestsGroup {
 func filterMergeRequests(groups []MergeRequestsGroup, currentUsername string, filter Filter) []MergeRequestsGroup {
 	for i, group := range groups {
 		groups[i].MergeRequests = lo.Filter(group.MergeRequests, func(item MergeRequest, _ int) bool {
-			if filter.SkipApprovedByMe {
-				if filter.ButStillShowMine && item.Author.Username == currentUsername {
-					return true
-				}
-				if lo.ContainsBy(item.Approvals, func(item Approval) bool {
-					return item.User.Username == currentUsername
-				}) {
+			stillShowMine := filter.ButStillShowMine && item.Author.Username == currentUsername
+
+			if filter.DoNotShowDrafts && strings.HasPrefix(item.Description, "Draft:") {
+				if !stillShowMine {
 					return false
 				}
 			}
-			if filter.ShowOnlyMine {
-				if item.Author.Username != currentUsername {
-					return false
+
+			if filter.SkipApprovedByMe {
+				if lo.ContainsBy(item.Approvals, func(item Approval) bool {
+					return item.User.Username == currentUsername
+				}) {
+					if !stillShowMine {
+						return false
+					}
 				}
+			}
+
+			if filter.ShowOnlyMine && item.Author.Username != currentUsername {
+				return false
 			}
 			return true
 		})

@@ -19,6 +19,7 @@ message GetMergeRequestsRequest {
     bool skipApprovedByMe = 1;
     bool showOnlyMine = 2;
     bool butStillShowMine = 3; // when "skip approved by me" is enabled, this forces to include mine MRs in the list
+    bool doNotShowDrafts = 4;
   }
   Filter filter = 1;
 }

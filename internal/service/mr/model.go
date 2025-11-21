@@ -6,6 +6,7 @@ type Filter struct {
 	SkipApprovedByMe bool
 	ButStillShowMine bool
 	ShowOnlyMine     bool
+	DoNotShowDrafts  bool
 }
 
 type User struct {

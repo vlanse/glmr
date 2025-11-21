@@ -17,6 +17,7 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 		SkipApprovedByMe: req.GetFilter().GetSkipApprovedByMe(),
 		ButStillShowMine: req.GetFilter().GetButStillShowMine(),
 		ShowOnlyMine:     req.GetFilter().GetShowOnlyMine(),
+		DoNotShowDrafts:  req.GetFilter().GetDoNotShowDrafts(),
 	})
 	if err != nil {
 		return nil, status.Error(codes.FailedPrecondition, err.Error())
