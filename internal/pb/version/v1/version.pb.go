@@ -114,7 +114,8 @@ func (x *GetVersionResponse) GetUpdate() *GetVersionResponse_Update {
 type GetVersionResponse_Update struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Version       string                 `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
-	Error         string                 `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+	ReleaseNotes  string                 `protobuf:"bytes,2,opt,name=releaseNotes,proto3" json:"releaseNotes,omitempty"`
+	Error         string                 `protobuf:"bytes,3,opt,name=error,proto3" json:"error,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -156,6 +157,13 @@ func (x *GetVersionResponse_Update) GetVersion() string {
 	return ""
 }
 
+func (x *GetVersionResponse_Update) GetReleaseNotes() string {
+	if x != nil {
+		return x.ReleaseNotes
+	}
+	return ""
+}
+
 func (x *GetVersionResponse_Update) GetError() string {
 	if x != nil {
 		return x.Error
@@ -168,13 +176,14 @@ var File_version_v1_version_proto protoreflect.FileDescriptor
 const file_version_v1_version_proto_rawDesc = "" +
 	"\n" +
 	"\x18version/v1/version.proto\x12\x05mr.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x13\n" +
-	"\x11GetVersionRequest\"\xb0\x01\n" +
+	"\x11GetVersionRequest\"\xd4\x01\n" +
 	"\x12GetVersionResponse\x12&\n" +
 	"\x0ecurrentVersion\x18\x01 \x01(\tR\x0ecurrentVersion\x128\n" +
-	"\x06update\x18\x02 \x01(\v2 .mr.v1.GetVersionResponse.UpdateR\x06update\x1a8\n" +
+	"\x06update\x18\x02 \x01(\v2 .mr.v1.GetVersionResponse.UpdateR\x06update\x1a\\\n" +
 	"\x06Update\x12\x18\n" +
-	"\aversion\x18\x01 \x01(\tR\aversion\x12\x14\n" +
-	"\x05error\x18\x02 \x01(\tR\x05error2o\n" +
+	"\aversion\x18\x01 \x01(\tR\aversion\x12\"\n" +
+	"\freleaseNotes\x18\x02 \x01(\tR\freleaseNotes\x12\x14\n" +
+	"\x05error\x18\x03 \x01(\tR\x05error2o\n" +
 	"\aVersion\x12d\n" +
 	"\n" +
 	"GetVersion\x12\x18.mr.v1.GetVersionRequest\x1a\x19.mr.v1.GetVersionResponse\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/version/v1/GetVersionB$Z\"github.com/vlanse/glmr/proto/mr/v1b\x06proto3"

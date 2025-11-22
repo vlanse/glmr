@@ -20,7 +20,8 @@ message GetVersionRequest {
 message GetVersionResponse {
   message Update {
     string version = 1;
-    string error = 2;
+    string releaseNotes = 2;
+    string error = 3;
   }
 
   string currentVersion = 1;

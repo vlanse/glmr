@@ -8,7 +8,7 @@ import (
 )
 
 func (s *Service) GetVersion(ctx context.Context, _ *api.GetVersionRequest) (*api.GetVersionResponse, error) {
-	updateVersion, err := version.CheckForUpdates(ctx)
+	updateVersion, updateMessage, err := version.CheckForUpdates(ctx)
 	errMsg := ""
 	if err != nil {
 		errMsg = err.Error()
@@ -17,8 +17,9 @@ func (s *Service) GetVersion(ctx context.Context, _ *api.GetVersionRequest) (*ap
 	res := &api.GetVersionResponse{
 		CurrentVersion: version.GetCurrent(),
 		Update: &api.GetVersionResponse_Update{
-			Version: updateVersion,
-			Error:   errMsg,
+			Version:      updateVersion,
+			ReleaseNotes: updateMessage,
+			Error:        errMsg,
 		},
 	}
 	return res, nil
