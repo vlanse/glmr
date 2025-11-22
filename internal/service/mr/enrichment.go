@@ -22,6 +22,25 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 	for _, projectID := range allProjectIDs {
 		group.SubmitErr(
 			func() error {
+				if found := func() bool {
+					mx.Lock()
+					defer mx.Unlock()
+					_, found := s.projectsByID[projectID]
+					return found
+				}(); found {
+					return nil
+				}
+
+				project, err := s.gitlabSvc.GetProject(ctx, projectID)
+				if err != nil {
+					return err
+				}
+				mx.Lock()
+				defer mx.Unlock()
+				s.projectsByID[projectID] = project
+				return nil
+			},
+			func() error {
 				mr, err := s.gitlabSvc.GetProjectMergeRequests(ctx, projectID)
 				if err != nil {
 					return err
@@ -48,6 +67,8 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 	}
 
 	for i, p := range projects {
+		p.WebURL = s.projectsByID[p.ID].WebURL
+
 		projects[i].MergeRequests = lo.Map(mrByProject[p.ID], func(mr gitlab.MergeRequest, _ int) MergeRequest {
 			return MergeRequest{
 				IID:         mr.IID,
@@ -56,6 +77,7 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 				Author: User{
 					Username:  mr.Author.Username,
 					AvatarURL: mr.Author.AvatarURL,
+					WebURL:    mr.Author.WebURL,
 				},
 				CreatedAt: mr.CreatedAt,
 				URL:       mr.WebURL,
@@ -72,6 +94,7 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 					return User{
 						Username:  item.Username,
 						AvatarURL: item.AvatarURL,
+						WebURL:    item.WebURL,
 					}
 				}),
 			}
@@ -159,6 +182,7 @@ func (s *Service) enrichProjectMRInfo(ctx context.Context, projects []Project) (
 						User: User{
 							Username:  a.User.Username,
 							AvatarURL: a.User.AvatarURL,
+							WebURL:    a.User.WebURL,
 						},
 						ApprovedAt: a.ApprovedAt,
 					}
@@ -184,10 +208,12 @@ func (s *Service) enrichProjectMRInfo(ctx context.Context, projects []Project) (
 								Author: User{
 									Username:  item.Author.Username,
 									AvatarURL: item.Author.AvatarURL,
+									WebURL:    item.Author.WebURL,
 								},
 								ResolvedBy: User{
 									Username:  item.ResolvedBy.Username,
 									AvatarURL: item.ResolvedBy.AvatarURL,
+									WebURL:    item.ResolvedBy.WebURL,
 								},
 								Resolved:   item.Resolved,
 								Resolvable: item.Resolvable,

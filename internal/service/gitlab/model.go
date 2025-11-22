@@ -2,6 +2,11 @@ package gitlab
 
 import "time"
 
+type Project struct {
+	ID     int64  `json:"id"`
+	WebURL string `json:"web_url"`
+}
+
 type MergeRequest struct {
 	ID           int64     `json:"id"`
 	IID          int64     `json:"iid"`
@@ -16,6 +21,7 @@ type MergeRequest struct {
 	Author       struct {
 		Username  string `json:"username"`
 		AvatarURL string `json:"avatar_url"`
+		WebURL    string `json:"web_url"`
 	} `json:"author"`
 }
 

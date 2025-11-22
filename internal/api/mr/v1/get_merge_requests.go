@@ -38,19 +38,22 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 							Description: item.Description,
 							Iid:         item.IID,
 							Project: &api.GetMergeRequestsResponse_MergeRequest_Project{
-								Name: item.Project.Name,
 								Id:   item.Project.ID,
+								Name: item.Project.Name,
+								Url:  item.Project.WebURL,
 							},
 							Url: item.URL,
 							Author: &api.GetMergeRequestsResponse_MergeRequest_User{
 								Username:  item.Author.Username,
 								AvatarUrl: item.Author.AvatarURL,
+								Url:       item.Author.WebURL,
 							},
 							ApprovedBy: lo.Map(item.Approvals, func(item mr.Approval, _ int) *api.GetMergeRequestsResponse_MergeRequest_User {
 								return &api.GetMergeRequestsResponse_MergeRequest_User{
 									Username:  item.User.Username,
 									AvatarUrl: item.User.AvatarURL,
 									Trusted:   item.User.IsOwner,
+									Url:       item.User.WebURL,
 								}
 							}),
 							Status: &api.GetMergeRequestsResponse_MergeRequest_Status{

@@ -360,6 +360,7 @@ type GetMergeRequestsResponse_MergeRequest_User struct {
 	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
 	AvatarUrl     string                 `protobuf:"bytes,2,opt,name=avatarUrl,proto3" json:"avatarUrl,omitempty"`
 	Trusted       bool                   `protobuf:"varint,3,opt,name=trusted,proto3" json:"trusted,omitempty"`
+	Url           string                 `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -415,10 +416,18 @@ func (x *GetMergeRequestsResponse_MergeRequest_User) GetTrusted() bool {
 	return false
 }
 
+func (x *GetMergeRequestsResponse_MergeRequest_User) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
 type GetMergeRequestsResponse_MergeRequest_Project struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Url           string                 `protobuf:"bytes,3,opt,name=url,proto3" json:"url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -453,6 +462,13 @@ func (*GetMergeRequestsResponse_MergeRequest_Project) Descriptor() ([]byte, []in
 	return file_mr_v1_mr_proto_rawDescGZIP(), []int{1, 0, 1}
 }
 
+func (x *GetMergeRequestsResponse_MergeRequest_Project) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
 func (x *GetMergeRequestsResponse_MergeRequest_Project) GetName() string {
 	if x != nil {
 		return x.Name
@@ -460,11 +476,11 @@ func (x *GetMergeRequestsResponse_MergeRequest_Project) GetName() string {
 	return ""
 }
 
-func (x *GetMergeRequestsResponse_MergeRequest_Project) GetId() int64 {
+func (x *GetMergeRequestsResponse_MergeRequest_Project) GetUrl() string {
 	if x != nil {
-		return x.Id
+		return x.Url
 	}
-	return 0
+	return ""
 }
 
 type GetMergeRequestsResponse_MergeRequest_Status struct {
@@ -658,9 +674,10 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"\x10skipApprovedByMe\x18\x01 \x01(\bR\x10skipApprovedByMe\x12\"\n" +
 	"\fshowOnlyMine\x18\x02 \x01(\bR\fshowOnlyMine\x12*\n" +
 	"\x10butStillShowMine\x18\x03 \x01(\bR\x10butStillShowMine\x12(\n" +
-	"\x0fdoNotShowDrafts\x18\x04 \x01(\bR\x0fdoNotShowDrafts\"\xf0\t\n" +
+	"\x0fdoNotShowDrafts\x18\x04 \x01(\bR\x0fdoNotShowDrafts\"\x94\n" +
+	"\n" +
 	"\x18GetMergeRequestsResponse\x12=\n" +
-	"\x06groups\x18\x01 \x03(\v2%.mr.v1.GetMergeRequestsResponse.GroupR\x06groups\x1a\x9e\a\n" +
+	"\x06groups\x18\x01 \x03(\v2%.mr.v1.GetMergeRequestsResponse.GroupR\x06groups\x1a\xc2\a\n" +
 	"\fMergeRequest\x12N\n" +
 	"\aproject\x18\x01 \x01(\v24.mr.v1.GetMergeRequestsResponse.MergeRequest.ProjectR\aproject\x12\x10\n" +
 	"\x03url\x18\x02 \x01(\tR\x03url\x12 \n" +
@@ -674,14 +691,16 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"\x03age\x18\b \x01(\tR\x03age\x12&\n" +
 	"\x0eapprovedBefore\x18\t \x01(\bR\x0eapprovedBefore\x12\x10\n" +
 	"\x03iid\x18\n" +
-	" \x01(\x03R\x03iid\x1aZ\n" +
+	" \x01(\x03R\x03iid\x1al\n" +
 	"\x04User\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1c\n" +
 	"\tavatarUrl\x18\x02 \x01(\tR\tavatarUrl\x12\x18\n" +
-	"\atrusted\x18\x03 \x01(\bR\atrusted\x1a-\n" +
-	"\aProject\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x1a\x98\x01\n" +
+	"\atrusted\x18\x03 \x01(\bR\atrusted\x12\x10\n" +
+	"\x03url\x18\x04 \x01(\tR\x03url\x1a?\n" +
+	"\aProject\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x10\n" +
+	"\x03url\x18\x03 \x01(\tR\x03url\x1a\x98\x01\n" +
 	"\x06Status\x12\x1a\n" +
 	"\bconflict\x18\x01 \x01(\bR\bconflict\x12&\n" +
 	"\x0epipelineFailed\x18\x02 \x01(\bR\x0epipelineFailed\x12\x14\n" +

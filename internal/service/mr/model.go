@@ -13,6 +13,7 @@ type User struct {
 	Username  string
 	AvatarURL string
 	IsOwner   bool
+	WebURL    string
 }
 
 type Approval struct {
@@ -82,6 +83,7 @@ type Project struct {
 	ID            int64
 	Name          string
 	GroupName     string
+	WebURL        string
 	MergeRequests []MergeRequest
 	ApprovalRules []ApprovalRule
 }

@@ -47,6 +47,27 @@ func (c *client) getProjectMergeRequests(ctx context.Context, projectID int64) (
 	return res, nil
 }
 
+func (c *client) getProject(ctx context.Context, projectID int64) (Project, error) {
+	data, err := request.GET(
+		ctx,
+		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d", c.baseURL, projectID)),
+		map[string]string{
+			tokenHeader: c.token,
+		},
+	)
+	if err != nil {
+		return Project{}, fmt.Errorf("failed to get project info from gitlab: %w", err)
+	}
+
+	var res Project
+	if err = json.Unmarshal(data, &res); err != nil {
+		return Project{}, fmt.Errorf("failed to unmarshal project info: %w", err)
+	}
+
+	return res, nil
+
+}
+
 func (c *client) getApprovalRules(ctx context.Context, projectID int64) ([]ApprovalRule, error) {
 	data, err := request.GET(
 		ctx,

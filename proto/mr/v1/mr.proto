@@ -30,11 +30,13 @@ message GetMergeRequestsResponse {
       string username = 1;
       string avatarUrl = 2;
       bool trusted = 3;
+      string url = 4;
     }
 
     message Project {
-      string name = 2;
       int64 id = 1;
+      string name = 2;
+      string url = 3;
     }
 
     message Status {

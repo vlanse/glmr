@@ -12,6 +12,10 @@ func NewService(baseURL string, token string) *Service {
 	}
 }
 
+func (s *Service) GetProject(ctx context.Context, projectID int64) (Project, error) {
+	return s.cl.getProject(ctx, projectID)
+}
+
 func (s *Service) GetProjectMergeRequests(ctx context.Context, projectID int64) ([]MergeRequest, error) {
 	return s.cl.getProjectMergeRequests(ctx, projectID)
 }

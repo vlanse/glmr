@@ -29,13 +29,16 @@ type Service struct {
 
 	currentUser *User
 	dataMx      sync.Mutex
+
+	projectsByID map[int64]gitlab.Project
 }
 
 func NewService(settings Settings, gitlabSvc *gitlab.Service) *Service {
 	return &Service{
-		settings:  settings,
-		gitlabSvc: gitlabSvc,
-		pool:      pond.NewPool(poolWorkerCount),
+		settings:     settings,
+		gitlabSvc:    gitlabSvc,
+		pool:         pond.NewPool(poolWorkerCount),
+		projectsByID: make(map[int64]gitlab.Project),
 	}
 }
 
@@ -52,6 +55,7 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 			s.currentUser = &User{
 				Username:  user.Username,
 				AvatarURL: user.AvatarURL,
+				WebURL:    user.WebURL,
 			}
 		}
 		currentUserName = s.currentUser.Username

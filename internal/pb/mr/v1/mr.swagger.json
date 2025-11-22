@@ -175,12 +175,15 @@
     "MergeRequestProject": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string"
-        },
         "id": {
           "type": "string",
           "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
         }
       }
     },
@@ -195,6 +198,9 @@
         },
         "trusted": {
           "type": "boolean"
+        },
+        "url": {
+          "type": "string"
         }
       }
     },
