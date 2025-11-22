@@ -10,6 +10,11 @@ import (
 	"github.com/google/go-github/v76/github"
 )
 
+const (
+	owner = "vlanse"
+	repo  = "glmr"
+)
+
 func GetCurrent() string {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
@@ -22,7 +27,7 @@ func GetCurrent() string {
 func CheckForUpdates(ctx context.Context) (string, string, error) {
 	cl := github.NewClient(nil)
 
-	tags, _, err := cl.Repositories.ListTags(ctx, "vlanse", "glmr", nil)
+	tags, _, err := cl.Repositories.ListTags(ctx, owner, repo, nil)
 	if err != nil {
 		return "", "", fmt.Errorf("check update version: failed to list repo tags: %w", err)
 	}
@@ -31,26 +36,26 @@ func CheckForUpdates(ctx context.Context) (string, string, error) {
 		return "", "", nil
 	}
 
-	updateVersion, err := semver.NewVersion(tags[0].GetName())
+	latestVersion, err := semver.NewVersion(tags[0].GetName())
 	if err != nil {
 		return "", "", fmt.Errorf("check update version: parse tag: %w", err)
 	}
 
-	// currentVersion, err := semver.NewVersion(GetCurrent())
-	// if err != nil {
-	// 	return "", "", fmt.Errorf("check update version: parse current version: %w", err)
-	// }
-	//
-	// if updateVersion.LessThanEqual(currentVersion) {
-	// 	return "", "", nil
-	// }
+	currentVersion, err := semver.NewVersion(GetCurrent())
+	if err != nil {
+		return "", "", fmt.Errorf("check update version: parse current version: %w", err)
+	}
 
-	commit, _, err := cl.Repositories.GetCommit(ctx, "vlanse", "glmr", tags[0].GetCommit().GetSHA(), nil)
+	if latestVersion.LessThanEqual(currentVersion) {
+		return "", "", nil
+	}
+
+	commit, _, err := cl.Repositories.GetCommit(ctx, owner, repo, tags[0].GetCommit().GetSHA(), nil)
 	if err != nil {
 		return "", "", fmt.Errorf("check update version: failed to get tag commit: %w", err)
 	}
 
 	updateMessage := commit.Commit.GetMessage()
 
-	return fmt.Sprintf("v%s", updateVersion.String()), updateMessage, nil
+	return fmt.Sprintf("v%s", latestVersion.String()), updateMessage, nil
 }
