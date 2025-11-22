@@ -36,7 +36,7 @@ Start the program
 
 Web interface address will be shown in stdout
 
-<img alt="Screenshot 2025-10-29 at 15 06 19" src="https://github.com/user-attachments/assets/a5e2ba36-e109-45cd-bba9-8cc9f698e43d" />
+<img alt="GLMR web UI" src="https://github.com/user-attachments/assets/9b6696b9-ee75-451b-960a-a91fe4539b2b" />
 
 
 ## Development notes
