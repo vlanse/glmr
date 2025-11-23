@@ -52,6 +52,11 @@ message GetMergeRequestsResponse {
       int32 resolvedCount = 2;
     }
 
+    message Issue {
+      string key = 1;
+      string url = 2;
+    }
+
     Project project = 1;
     string url = 2;
     string description = 3;
@@ -62,6 +67,7 @@ message GetMergeRequestsResponse {
     string age = 8;
     bool approvedBefore = 9;
     int64 iid = 10;
+    repeated Issue issues = 11;
   }
 
   message Group {

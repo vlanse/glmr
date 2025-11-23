@@ -58,6 +58,11 @@ type Status struct {
 	Pending        bool
 }
 
+type Issue struct {
+	Key string
+	URL string
+}
+
 type MergeRequest struct {
 	IID            int64 // "short" gitlab ID
 	Project        Project
@@ -72,6 +77,7 @@ type MergeRequest struct {
 	CommentStats   CommentStats
 	Status         Status
 	ApprovedBefore bool
+	Issues         []Issue
 }
 
 type ApprovalRule struct {

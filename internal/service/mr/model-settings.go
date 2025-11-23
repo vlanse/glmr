@@ -24,8 +24,13 @@ func (g ProjectGroupSettings) ProjectByID(id int64) (ProjectSettings, bool) {
 	})
 }
 
+type JIRA struct {
+	URL string
+}
+
 type Settings struct {
 	Groups []ProjectGroupSettings
+	JIRA   JIRA
 }
 
 func (s *Settings) GetProjects() []Project {

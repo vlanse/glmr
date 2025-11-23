@@ -18,6 +18,9 @@ gitlab:
   url: "gitlab instance URL, i.e. https://gitlab.com"
   token: "your gitlab access token"
 
+jira:
+  url: "https://jira.domain"
+
 groups:
   - name: some group of projects
     projects:

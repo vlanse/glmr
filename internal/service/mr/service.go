@@ -3,6 +3,7 @@ package mr
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 	"sync"
@@ -21,6 +22,8 @@ const (
 	pipelineFailedStatus  = "failed"
 	pipelineSuccessStatus = "success"
 )
+
+var jiraIssueRx = regexp.MustCompile(`\[([A-Z]+-\d+)]`)
 
 type Service struct {
 	settings  Settings
@@ -75,6 +78,8 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 		return nil, err
 	}
 
+	projects = s.fillIssues(projects)
+
 	projects = fillOwners(projects)
 
 	projects = sortApprovers(currentUserName, projects)
@@ -98,6 +103,27 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 	}
 
 	return groups, nil
+}
+
+func (s *Service) fillIssues(projects []Project) []Project {
+	if len(s.settings.JIRA.URL) == 0 {
+		return projects
+	}
+	for i, project := range projects {
+		for j, mr := range project.MergeRequests {
+			issueKeys := jiraIssueRx.FindAllStringSubmatch(mr.Description, -1)
+			for _, issueKey := range issueKeys {
+				if len(issueKey) < 2 {
+					continue
+				}
+				projects[i].MergeRequests[j].Issues = append(projects[i].MergeRequests[j].Issues, Issue{
+					Key: issueKey[1],
+					URL: fmt.Sprintf("%s/browse/%s", s.settings.JIRA.URL, issueKey[1]),
+				})
+			}
+		}
+	}
+	return projects
 }
 
 func fillGroupSummaries(groups []MergeRequestsGroup) []MergeRequestsGroup {

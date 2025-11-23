@@ -69,6 +69,12 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 							},
 							Age:            fmt.Sprintf("%dd", int(time.Since(item.CreatedAt).Hours()/24)),
 							ApprovedBefore: item.ApprovedBefore,
+							Issues: lo.Map(item.Issues, func(item mr.Issue, _ int) *api.GetMergeRequestsResponse_MergeRequest_Issue {
+								return &api.GetMergeRequestsResponse_MergeRequest_Issue{
+									Key: item.Key,
+									Url: item.URL,
+								}
+							}),
 						}
 					},
 				),

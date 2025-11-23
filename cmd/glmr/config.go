@@ -26,6 +26,10 @@ type Config struct {
 		Token string `yaml:"token"`
 	} `yaml:"gitlab"`
 
+	JIRA struct {
+		URL string `yaml:"url"`
+	} `yaml:"jira"`
+
 	Groups []Group `yaml:"groups"`
 }
 

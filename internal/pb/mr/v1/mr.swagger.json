@@ -123,6 +123,13 @@
         "iid": {
           "type": "string",
           "format": "int64"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/MergeRequestIssue"
+          }
         }
       }
     },
@@ -169,6 +176,17 @@
         "resolvedCount": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "MergeRequestIssue": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
         }
       }
     },

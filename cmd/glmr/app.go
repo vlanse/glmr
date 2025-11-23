@@ -89,6 +89,9 @@ func (a *App) initServices(_ context.Context) error {
 
 	a.mrSvc = mr.NewService(
 		mr.Settings{
+			JIRA: mr.JIRA{
+				URL: a.cfg.JIRA.URL,
+			},
 			Groups: lo.Map(a.cfg.Groups, func(item Group, _ int) mr.ProjectGroupSettings {
 				return mr.ProjectGroupSettings{
 					Name: item.Name,
