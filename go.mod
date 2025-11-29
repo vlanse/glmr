@@ -14,6 +14,7 @@ tool (
 require (
 	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/alitto/pond/v2 v2.5.0
+	github.com/fsnotify/fsnotify v1.9.0
 	github.com/google/go-github/v76 v76.0.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3
 	github.com/samber/lo v1.51.0

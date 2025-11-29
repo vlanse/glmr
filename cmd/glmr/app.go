@@ -4,9 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
-	"os/user"
-	"path/filepath"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/samber/lo"
@@ -16,6 +13,7 @@ import (
 	"github.com/vlanse/glmr/internal/service/editor"
 	"github.com/vlanse/glmr/internal/service/gitlab"
 	"github.com/vlanse/glmr/internal/service/mr"
+	"github.com/vlanse/glmr/internal/util/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -24,7 +22,7 @@ type App struct {
 	grpcServer *grpc.Server
 	mux        *runtime.ServeMux
 
-	cfg Config
+	cfgProvider *config.Provider[Config]
 
 	gitlabSvc *gitlab.Service
 	mrSvc     *mr.Service
@@ -53,80 +51,26 @@ func (a *App) Run(ctx context.Context) error {
 }
 
 func (a *App) initConfig(_ context.Context) error {
-	pathPriority := []func() (string, error){
-		func() (string, error) {
-			return os.Getwd()
-		},
-		func() (string, error) {
-			ex, err := os.Executable()
-			if err != nil {
-				return "", fmt.Errorf("could not get path to executable: %w", err)
-			}
-			return filepath.Dir(ex), nil
-		},
-		func() (string, error) {
-			curUser, err := user.Current()
-			if err != nil {
-				return "", fmt.Errorf("error getting current OS user context: %w", err)
-			}
-			return curUser.HomeDir, nil
-		},
-	}
-
 	var err error
-	for _, pathGetter := range pathPriority {
-		var path string
-		if path, err = pathGetter(); err == nil {
-			configPath := filepath.Join(path, configFilename)
-			if a.cfg, err = loadConfig(configPath); err != nil {
-				return fmt.Errorf("error opening settings file: %w", err)
-			}
-			return nil
-		}
+
+	if a.cfgProvider, err = config.MakeProvider[Config](configFilename); err != nil {
+		return err
 	}
-	return fmt.Errorf("error opening settings file: %w", err)
+	a.cfgProvider.ChangeCallback = a.updateConfig
+
+	return nil
 }
 
 func (a *App) initServices(_ context.Context) error {
-	a.gitlabSvc = gitlab.NewService(a.cfg.Gitlab.URL, a.cfg.Gitlab.Token)
+	cfg := a.cfgProvider.GetConfig()
 
-	a.mrSvc = mr.NewService(
-		mr.Settings{
-			JIRA: mr.JIRA{
-				URL: a.cfg.JIRA.URL,
-			},
-			Groups: lo.Map(a.cfg.Groups, func(item Group, _ int) mr.ProjectGroupSettings {
-				return mr.ProjectGroupSettings{
-					Name: item.Name,
-					Projects: lo.Map(item.Projects, func(item Project, _ int) mr.ProjectSettings {
-						return mr.ProjectSettings{
-							Name: item.Name,
-							ID:   item.ID,
-						}
-					}),
-				}
-			}),
-		},
-		a.gitlabSvc,
-	)
+	a.gitlabSvc = gitlab.NewService(cfg.Gitlab.URL, cfg.Gitlab.Token)
 
-	a.editorSvc = editor.NewService(editor.Settings{
-		Cmd: a.cfg.Editor.Cmd,
-		Projects: func() []editor.Project {
-			var res []editor.Project
-			for _, g := range a.cfg.Groups {
-				for _, p := range g.Projects {
-					if len(p.Path) > 0 {
-						res = append(res, editor.Project{
-							ID:   p.ID,
-							Path: p.Path,
-						})
-					}
-				}
-			}
-			return res
-		}(),
-	})
+	a.mrSvc = mr.NewService(a.gitlabSvc)
+
+	a.editorSvc = editor.NewService()
+
+	a.updateConfig(cfg)
 
 	return nil
 }
@@ -159,4 +103,45 @@ func (a *App) startBackgroundWorkers(_ context.Context) error {
 	}
 
 	return nil
+}
+
+func (a *App) updateConfig(cfg Config) {
+	mrSettings := mr.Settings{
+		JIRA: mr.JIRA{
+			URL: cfg.JIRA.URL,
+		},
+		Groups: lo.Map(cfg.Groups, func(item Group, _ int) mr.ProjectGroupSettings {
+			return mr.ProjectGroupSettings{
+				Name: item.Name,
+				Projects: lo.Map(item.Projects, func(item Project, _ int) mr.ProjectSettings {
+					return mr.ProjectSettings{
+						Name: item.Name,
+						ID:   item.ID,
+					}
+				}),
+			}
+		}),
+	}
+	a.mrSvc.UpdateSettings(mrSettings)
+
+	editorSettings := editor.Settings{
+		Cmd: cfg.Editor.Cmd,
+		Projects: func() []editor.Project {
+			var res []editor.Project
+			for _, g := range cfg.Groups {
+				for _, p := range g.Projects {
+					if len(p.Path) > 0 {
+						res = append(res, editor.Project{
+							ID:   p.ID,
+							Path: p.Path,
+						})
+					}
+				}
+			}
+			return res
+		}(),
+	}
+	a.editorSvc.UpdateSettings(editorSettings)
+
+	a.gitlabSvc.UpdateSettings(cfg.Gitlab.URL, cfg.Gitlab.Token)
 }

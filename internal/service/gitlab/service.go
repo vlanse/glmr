@@ -6,10 +6,15 @@ type Service struct {
 	cl *client
 }
 
-func NewService(baseURL string, token string) *Service {
+func NewService(baseURL, token string) *Service {
 	return &Service{
 		cl: newClient(baseURL, token),
 	}
+}
+
+func (s *Service) UpdateSettings(baseURL, token string) {
+	s.cl.baseURL = baseURL
+	s.cl.token = token
 }
 
 func (s *Service) GetProject(ctx context.Context, projectID int64) (Project, error) {

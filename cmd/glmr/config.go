@@ -1,11 +1,5 @@
 package main
 
-import (
-	"os"
-
-	"gopkg.in/yaml.v3"
-)
-
 const (
 	configFilename = "glmr-config.yaml"
 )
@@ -36,18 +30,4 @@ type Config struct {
 	}
 
 	Groups []Group `yaml:"groups"`
-}
-
-func loadConfig(path string) (Config, error) {
-	cfgFile, err := os.Open(path)
-	cfg := Config{}
-	if err != nil {
-		return cfg, err
-	}
-	d := yaml.NewDecoder(cfgFile)
-
-	if cfgErr := d.Decode(&cfg); cfgErr != nil {
-		return cfg, cfgErr
-	}
-	return cfg, nil
 }

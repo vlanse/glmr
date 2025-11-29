@@ -36,13 +36,18 @@ type Service struct {
 	projectsByID map[int64]gitlab.Project
 }
 
-func NewService(settings Settings, gitlabSvc *gitlab.Service) *Service {
+func NewService(gitlabSvc *gitlab.Service) *Service {
 	return &Service{
-		settings:     settings,
 		gitlabSvc:    gitlabSvc,
 		pool:         pond.NewPool(poolWorkerCount),
 		projectsByID: make(map[int64]gitlab.Project),
 	}
+}
+
+func (s *Service) UpdateSettings(settings Settings) {
+	s.dataMx.Lock()
+	defer s.dataMx.Unlock()
+	s.settings = settings
 }
 
 func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeRequestsGroup, error) {

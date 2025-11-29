@@ -21,13 +21,15 @@ type Service struct {
 	projects map[int64]Project
 }
 
-func NewService(settings Settings) *Service {
-	return &Service{
-		cmd: settings.Cmd,
-		projects: lo.SliceToMap(settings.Projects, func(item Project) (int64, Project) {
-			return item.ID, item
-		}),
-	}
+func NewService() *Service {
+	return &Service{}
+}
+
+func (s *Service) UpdateSettings(settings Settings) {
+	s.cmd = settings.Cmd
+	s.projects = lo.SliceToMap(settings.Projects, func(item Project) (int64, Project) {
+		return item.ID, item
+	})
 }
 
 func (s *Service) OpenProject(_ context.Context, id int64) error {
