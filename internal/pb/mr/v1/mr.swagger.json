@@ -150,6 +150,9 @@
         },
         "pending": {
           "type": "boolean"
+        },
+        "editorAvailable": {
+          "type": "boolean"
         }
       }
     },
@@ -219,6 +222,9 @@
         },
         "url": {
           "type": "string"
+        },
+        "isMe": {
+          "type": "boolean"
         }
       }
     },

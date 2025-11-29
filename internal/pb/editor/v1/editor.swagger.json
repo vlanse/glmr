@@ -1,0 +1,94 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "editor/v1/editor.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Editor"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/editor/v1/OpenProject": {
+      "post": {
+        "operationId": "Editor_OpenProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1OpenProjectResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1OpenProjectRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Editor"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1OpenProjectRequest": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1OpenProjectResponse": {
+      "type": "object"
+    }
+  }
+}

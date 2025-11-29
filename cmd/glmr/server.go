@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/samber/lo"
 	"github.com/swaggest/swgui/v5emb"
 	"github.com/vlanse/glmr/internal"
 	"github.com/vlanse/glmr/internal/util/swagger"
@@ -26,7 +25,7 @@ func runGrpcServer(srv *grpc.Server) error {
 	addr := grpcServerEndpoint
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
-		return fmt.Errorf("открытие порта для web-ui на %s: %w", addr, err)
+		return fmt.Errorf("open web-ui port on %s: %w", addr, err)
 	}
 
 	go func() {
@@ -101,12 +100,6 @@ func serveFrontend(mux *runtime.ServeMux) error {
 	if err = mux.HandlePath(
 		http.MethodGet, "/{content}",
 		func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-			if lo.ContainsBy([]string{"/portfolio", "/settings", "/index", "/history", "/asset"}, func(path string) bool {
-				return strings.HasPrefix(r.URL.Path, path)
-			}) {
-				// to handle client routing paths correct
-				r.URL.Path = "/"
-			}
 			http.FileServer(http.FS(content)).ServeHTTP(w, r)
 		},
 	); err != nil {

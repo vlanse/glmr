@@ -112,13 +112,19 @@ func (s *Service) fillIssues(projects []Project) []Project {
 	for i, project := range projects {
 		for j, mr := range project.MergeRequests {
 			issueKeys := jiraIssueRx.FindAllStringSubmatch(mr.Description, -1)
+			var keys []string
 			for _, issueKey := range issueKeys {
 				if len(issueKey) < 2 {
 					continue
 				}
+				key := issueKey[1]
+				if lo.Contains(keys, key) {
+					continue
+				}
+				keys = append(keys, key)
 				projects[i].MergeRequests[j].Issues = append(projects[i].MergeRequests[j].Issues, Issue{
-					Key: issueKey[1],
-					URL: fmt.Sprintf("%s/browse/%s", s.settings.JIRA.URL, issueKey[1]),
+					Key: key,
+					URL: fmt.Sprintf("%s/browse/%s", s.settings.JIRA.URL, key),
 				})
 			}
 		}

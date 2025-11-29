@@ -20,16 +20,20 @@ gitlab:
 
 jira:
   url: "https://jira.domain"
+  
+editor:
+  cmd: "/bin/my-favourite-editor {project_path}"
 
 groups:
   - name: some group of projects
     projects:
-      - name: gl-cli
+      - name: my-project
         id: 34675721
+        path: ~/src/my-project
 
   - name: other group
     projects:
-      - name: dotfiles
+      - name: other project
         id: 10382875
 ```
 
@@ -44,6 +48,8 @@ Web interface address will be shown in stdout
 
 
 ## Development notes
+
+Frontend code is in [separate repo](https://github.com/vlanse/glmr-fe)
 
 To generate code from proto files
 ```sh

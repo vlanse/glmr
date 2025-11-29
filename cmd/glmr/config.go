@@ -13,6 +13,7 @@ const (
 type Project struct {
 	ID   int64  `yaml:"id"`
 	Name string `yaml:"name"`
+	Path string `yaml:"path"`
 }
 
 type Group struct {
@@ -29,6 +30,10 @@ type Config struct {
 	JIRA struct {
 		URL string `yaml:"url"`
 	} `yaml:"jira"`
+
+	Editor struct {
+		Cmd string `yaml:"cmd"`
+	}
 
 	Groups []Group `yaml:"groups"`
 }

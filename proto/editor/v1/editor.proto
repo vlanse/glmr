@@ -1,0 +1,22 @@
+syntax = "proto3";
+package mr.v1;
+option go_package = "github.com/vlanse/glmr/proto/editor/v1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service Editor {
+  rpc OpenProject(OpenProjectRequest) returns (OpenProjectResponse) {
+    option (google.api.http) = {
+      post: "/editor/v1/OpenProject"
+      body: "*"
+    };
+  }
+}
+
+message OpenProjectRequest {
+  int64 projectId = 1;
+}
+
+message OpenProjectResponse {
+}

@@ -47,6 +47,7 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 								Username:  item.Author.Username,
 								AvatarUrl: item.Author.AvatarURL,
 								Url:       item.Author.WebURL,
+								IsMe:      item.Author.IsMe,
 							},
 							ApprovedBy: lo.Map(item.Approvals, func(item mr.Approval, _ int) *api.GetMergeRequestsResponse_MergeRequest_User {
 								return &api.GetMergeRequestsResponse_MergeRequest_User{
@@ -54,14 +55,16 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 									AvatarUrl: item.User.AvatarURL,
 									Trusted:   item.User.IsOwner,
 									Url:       item.User.WebURL,
+									IsMe:      item.User.IsMe,
 								}
 							}),
 							Status: &api.GetMergeRequestsResponse_MergeRequest_Status{
-								PipelineFailed: item.Status.PipelineFailed,
-								Conflict:       item.Status.Conflict,
-								Ready:          item.Status.Ready,
-								Outdated:       item.Status.Outdated,
-								Pending:        item.Status.Pending,
+								PipelineFailed:  item.Status.PipelineFailed,
+								Conflict:        item.Status.Conflict,
+								Ready:           item.Status.Ready,
+								Outdated:        item.Status.Outdated,
+								Pending:         item.Status.Pending,
+								EditorAvailable: s.editorSvc.IsProjectConfigured(item.Project.ID),
 							},
 							Comments: &api.GetMergeRequestsResponse_MergeRequest_Comments{
 								ResolvedCount:   int32(item.CommentStats.ResolvedCount),

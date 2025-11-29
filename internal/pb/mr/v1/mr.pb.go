@@ -369,6 +369,7 @@ type GetMergeRequestsResponse_MergeRequest_User struct {
 	AvatarUrl     string                 `protobuf:"bytes,2,opt,name=avatarUrl,proto3" json:"avatarUrl,omitempty"`
 	Trusted       bool                   `protobuf:"varint,3,opt,name=trusted,proto3" json:"trusted,omitempty"`
 	Url           string                 `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
+	IsMe          bool                   `protobuf:"varint,5,opt,name=isMe,proto3" json:"isMe,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -429,6 +430,13 @@ func (x *GetMergeRequestsResponse_MergeRequest_User) GetUrl() string {
 		return x.Url
 	}
 	return ""
+}
+
+func (x *GetMergeRequestsResponse_MergeRequest_User) GetIsMe() bool {
+	if x != nil {
+		return x.IsMe
+	}
+	return false
 }
 
 type GetMergeRequestsResponse_MergeRequest_Project struct {
@@ -492,14 +500,15 @@ func (x *GetMergeRequestsResponse_MergeRequest_Project) GetUrl() string {
 }
 
 type GetMergeRequestsResponse_MergeRequest_Status struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	Conflict       bool                   `protobuf:"varint,1,opt,name=conflict,proto3" json:"conflict,omitempty"`
-	PipelineFailed bool                   `protobuf:"varint,2,opt,name=pipelineFailed,proto3" json:"pipelineFailed,omitempty"`
-	Ready          bool                   `protobuf:"varint,3,opt,name=ready,proto3" json:"ready,omitempty"`
-	Outdated       bool                   `protobuf:"varint,4,opt,name=outdated,proto3" json:"outdated,omitempty"`
-	Pending        bool                   `protobuf:"varint,5,opt,name=pending,proto3" json:"pending,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Conflict        bool                   `protobuf:"varint,1,opt,name=conflict,proto3" json:"conflict,omitempty"`
+	PipelineFailed  bool                   `protobuf:"varint,2,opt,name=pipelineFailed,proto3" json:"pipelineFailed,omitempty"`
+	Ready           bool                   `protobuf:"varint,3,opt,name=ready,proto3" json:"ready,omitempty"`
+	Outdated        bool                   `protobuf:"varint,4,opt,name=outdated,proto3" json:"outdated,omitempty"`
+	Pending         bool                   `protobuf:"varint,5,opt,name=pending,proto3" json:"pending,omitempty"`
+	EditorAvailable bool                   `protobuf:"varint,6,opt,name=editorAvailable,proto3" json:"editorAvailable,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *GetMergeRequestsResponse_MergeRequest_Status) Reset() {
@@ -563,6 +572,13 @@ func (x *GetMergeRequestsResponse_MergeRequest_Status) GetOutdated() bool {
 func (x *GetMergeRequestsResponse_MergeRequest_Status) GetPending() bool {
 	if x != nil {
 		return x.Pending
+	}
+	return false
+}
+
+func (x *GetMergeRequestsResponse_MergeRequest_Status) GetEditorAvailable() bool {
+	if x != nil {
+		return x.EditorAvailable
 	}
 	return false
 }
@@ -734,9 +750,9 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"\x10skipApprovedByMe\x18\x01 \x01(\bR\x10skipApprovedByMe\x12\"\n" +
 	"\fshowOnlyMine\x18\x02 \x01(\bR\fshowOnlyMine\x12*\n" +
 	"\x10butStillShowMine\x18\x03 \x01(\bR\x10butStillShowMine\x12(\n" +
-	"\x0fdoNotShowDrafts\x18\x04 \x01(\bR\x0fdoNotShowDrafts\"\x8d\v\n" +
+	"\x0fdoNotShowDrafts\x18\x04 \x01(\bR\x0fdoNotShowDrafts\"\xcc\v\n" +
 	"\x18GetMergeRequestsResponse\x12=\n" +
-	"\x06groups\x18\x01 \x03(\v2%.mr.v1.GetMergeRequestsResponse.GroupR\x06groups\x1a\xbb\b\n" +
+	"\x06groups\x18\x01 \x03(\v2%.mr.v1.GetMergeRequestsResponse.GroupR\x06groups\x1a\xfa\b\n" +
 	"\fMergeRequest\x12N\n" +
 	"\aproject\x18\x01 \x01(\v24.mr.v1.GetMergeRequestsResponse.MergeRequest.ProjectR\aproject\x12\x10\n" +
 	"\x03url\x18\x02 \x01(\tR\x03url\x12 \n" +
@@ -751,22 +767,24 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"\x0eapprovedBefore\x18\t \x01(\bR\x0eapprovedBefore\x12\x10\n" +
 	"\x03iid\x18\n" +
 	" \x01(\x03R\x03iid\x12J\n" +
-	"\x06issues\x18\v \x03(\v22.mr.v1.GetMergeRequestsResponse.MergeRequest.IssueR\x06issues\x1al\n" +
+	"\x06issues\x18\v \x03(\v22.mr.v1.GetMergeRequestsResponse.MergeRequest.IssueR\x06issues\x1a\x80\x01\n" +
 	"\x04User\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1c\n" +
 	"\tavatarUrl\x18\x02 \x01(\tR\tavatarUrl\x12\x18\n" +
 	"\atrusted\x18\x03 \x01(\bR\atrusted\x12\x10\n" +
-	"\x03url\x18\x04 \x01(\tR\x03url\x1a?\n" +
+	"\x03url\x18\x04 \x01(\tR\x03url\x12\x12\n" +
+	"\x04isMe\x18\x05 \x01(\bR\x04isMe\x1a?\n" +
 	"\aProject\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x10\n" +
-	"\x03url\x18\x03 \x01(\tR\x03url\x1a\x98\x01\n" +
+	"\x03url\x18\x03 \x01(\tR\x03url\x1a\xc2\x01\n" +
 	"\x06Status\x12\x1a\n" +
 	"\bconflict\x18\x01 \x01(\bR\bconflict\x12&\n" +
 	"\x0epipelineFailed\x18\x02 \x01(\bR\x0epipelineFailed\x12\x14\n" +
 	"\x05ready\x18\x03 \x01(\bR\x05ready\x12\x1a\n" +
 	"\boutdated\x18\x04 \x01(\bR\boutdated\x12\x18\n" +
-	"\apending\x18\x05 \x01(\bR\apending\x1aZ\n" +
+	"\apending\x18\x05 \x01(\bR\apending\x12(\n" +
+	"\x0feditorAvailable\x18\x06 \x01(\bR\x0feditorAvailable\x1aZ\n" +
 	"\bComments\x12(\n" +
 	"\x0funresolvedCount\x18\x01 \x01(\x05R\x0funresolvedCount\x12$\n" +
 	"\rresolvedCount\x18\x02 \x01(\x05R\rresolvedCount\x1a+\n" +

@@ -10,8 +10,10 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/samber/lo"
+	editorV1 "github.com/vlanse/glmr/internal/api/editor/v1"
 	mrV1 "github.com/vlanse/glmr/internal/api/mr/v1"
 	versionV1 "github.com/vlanse/glmr/internal/api/version/v1"
+	"github.com/vlanse/glmr/internal/service/editor"
 	"github.com/vlanse/glmr/internal/service/gitlab"
 	"github.com/vlanse/glmr/internal/service/mr"
 	"google.golang.org/grpc"
@@ -26,6 +28,7 @@ type App struct {
 
 	gitlabSvc *gitlab.Service
 	mrSvc     *mr.Service
+	editorSvc *editor.Service
 }
 
 func NewApp() *App {
@@ -107,6 +110,24 @@ func (a *App) initServices(_ context.Context) error {
 		a.gitlabSvc,
 	)
 
+	a.editorSvc = editor.NewService(editor.Settings{
+		Cmd: a.cfg.Editor.Cmd,
+		Projects: func() []editor.Project {
+			var res []editor.Project
+			for _, g := range a.cfg.Groups {
+				for _, p := range g.Projects {
+					if len(p.Path) > 0 {
+						res = append(res, editor.Project{
+							ID:   p.ID,
+							Path: p.Path,
+						})
+					}
+				}
+			}
+			return res
+		}(),
+	})
+
 	return nil
 }
 
@@ -116,12 +137,16 @@ func (a *App) initAPI(ctx context.Context) error {
 
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
-	if err := mrV1.New(a.mrSvc).Register(ctx, a.grpcServer, a.mux, grpcServerEndpoint, opts); err != nil {
+	if err := mrV1.New(a.mrSvc, a.editorSvc).Register(ctx, a.grpcServer, a.mux, grpcServerEndpoint, opts); err != nil {
 		return fmt.Errorf("init mr v1 API: %w", err)
 	}
 
 	if err := versionV1.New().Register(ctx, a.grpcServer, a.mux, grpcServerEndpoint, opts); err != nil {
 		return fmt.Errorf("init version v1 API: %w", err)
+	}
+
+	if err := editorV1.New(a.editorSvc).Register(ctx, a.grpcServer, a.mux, grpcServerEndpoint, opts); err != nil {
+		return fmt.Errorf("init editor v1 API: %w", err)
 	}
 
 	return nil

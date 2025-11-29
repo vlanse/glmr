@@ -14,6 +14,7 @@ type User struct {
 	AvatarURL string
 	IsOwner   bool
 	WebURL    string
+	IsMe      bool
 }
 
 type Approval struct {

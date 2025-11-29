@@ -78,6 +78,7 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 					Username:  mr.Author.Username,
 					AvatarURL: mr.Author.AvatarURL,
 					WebURL:    mr.Author.WebURL,
+					IsMe:      s.currentUser.Username == mr.Author.Username,
 				},
 				CreatedAt: mr.CreatedAt,
 				URL:       mr.WebURL,
@@ -95,6 +96,7 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 						Username:  item.Username,
 						AvatarURL: item.AvatarURL,
 						WebURL:    item.WebURL,
+						IsMe:      s.currentUser.Username == item.Username,
 					}
 				}),
 			}
@@ -209,11 +211,13 @@ func (s *Service) enrichProjectMRInfo(ctx context.Context, projects []Project) (
 									Username:  item.Author.Username,
 									AvatarURL: item.Author.AvatarURL,
 									WebURL:    item.Author.WebURL,
+									IsMe:      s.currentUser.Username == item.Author.Username,
 								},
 								ResolvedBy: User{
 									Username:  item.ResolvedBy.Username,
 									AvatarURL: item.ResolvedBy.AvatarURL,
 									WebURL:    item.ResolvedBy.WebURL,
+									IsMe:      s.currentUser.Username == item.ResolvedBy.Username,
 								},
 								Resolved:   item.Resolved,
 								Resolvable: item.Resolvable,

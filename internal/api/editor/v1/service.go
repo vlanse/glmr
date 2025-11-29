@@ -1,25 +1,22 @@
-package mr_v1
+package editor_v1
 
 import (
 	"context"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	api "github.com/vlanse/glmr/internal/pb/mr/v1"
+	api "github.com/vlanse/glmr/internal/pb/editor/v1"
 	"github.com/vlanse/glmr/internal/service/editor"
-	"github.com/vlanse/glmr/internal/service/mr"
 	"google.golang.org/grpc"
 )
 
 type Service struct {
-	api.UnsafeMergeRequestsServer
+	api.UnsafeEditorServer
 
-	mrSvc     *mr.Service
 	editorSvc *editor.Service
 }
 
-func New(mrSvc *mr.Service, editorSvc *editor.Service) *Service {
+func New(editorSvc *editor.Service) *Service {
 	return &Service{
-		mrSvc:     mrSvc,
 		editorSvc: editorSvc,
 	}
 }
@@ -31,6 +28,6 @@ func (s *Service) Register(
 	endpoint string,
 	opts []grpc.DialOption,
 ) error {
-	api.RegisterMergeRequestsServer(srv, s)
-	return api.RegisterMergeRequestsHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	api.RegisterEditorServer(srv, s)
+	return api.RegisterEditorHandlerFromEndpoint(ctx, mux, endpoint, opts)
 }
