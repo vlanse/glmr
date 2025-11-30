@@ -59,8 +59,7 @@ Web interface available at http://localhost:8082
 
 Open Web UI in your favourite browser:
 
-<img alt="GLMR web UI" src="https://github.com/user-attachments/assets/9b6696b9-ee75-451b-960a-a91fe4539b2b" />
-
+<img alt="GLMR web UI" src="https://github.com/user-attachments/assets/ce517e9c-b7a6-44bf-ab63-d5446784e7f0" />
 
 ## Development notes
 
