@@ -20,7 +20,7 @@ go install github.com/vlanse/glmr/cmd/glmr@latest
 ```
 
 ## Run
-Prepare configuration file and put it in home dir. 
+Prepare configuration file and put it in home dir (btw, configuration file is being watched for changes, so program restart is not needed). 
 
 Example:
 ```yaml
