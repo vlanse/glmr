@@ -1,7 +1,7 @@
 # GLMR
 v0.0.13
 
-aka **g**it**l**ab **m**erge **r**equests
+aka **G**it**L**ab **M**erge **R**equests
 
 Client-side web application for viewing Gitlab MRs of interest.
 
