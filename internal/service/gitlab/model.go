@@ -3,8 +3,9 @@ package gitlab
 import "time"
 
 type Project struct {
-	ID     int64  `json:"id"`
-	WebURL string `json:"web_url"`
+	ID                int64  `json:"id"`
+	WebURL            string `json:"web_url"`
+	PathWithNamespace string `json:"path_with_namespace"`
 }
 
 type MergeRequest struct {
@@ -88,4 +89,45 @@ type MergeRequestInfo struct {
 	Pipeline    struct {
 		Status string `json:"status"`
 	} `json:"pipeline"`
+}
+
+type UserGQ struct {
+	ID          string `json:"id"`
+	Username    string `json:"username"`
+	AvatarURL   string `json:"avatarUrl"`
+	WebURL      string `json:"webUrl"`
+	Name        string `json:"name"`
+	PublicEmail string `json:"publicEmail"`
+}
+
+type PipelineGQ struct {
+	ID     string `json:"id"`
+	Status string `json:"status"`
+}
+
+type DiffStatsGQ struct {
+	Additions int64 `json:"additions"`
+	Deletions int64 `json:"deletions"`
+	Changes   int64 `json:"changes"`
+	FileCount int64 `json:"fileCount"`
+}
+
+type MergeRequestGQ struct {
+	IID        int64     `json:"iid,string"`
+	ProjectID  int64     `json:"projectId"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+	WebURL     string    `json:"webUrl"`
+	Conflicts  bool      `json:"conflicts"`
+	Title      string    `json:"title"`
+	State      string    `json:"state"`
+	Committers struct {
+		Nodes []UserGQ `json:"nodes"`
+	} `json:"committers"`
+	ApprovedBy struct {
+		Nodes []UserGQ `json:"nodes"`
+	} `json:"approvedBy"`
+	Author           UserGQ      `json:"author"`
+	HeadPipeline     PipelineGQ  `json:"headPipeline"`
+	DiffStatsSummary DiffStatsGQ `json:"diffStatsSummary"`
 }

@@ -130,6 +130,9 @@
             "type": "object",
             "$ref": "#/definitions/MergeRequestIssue"
           }
+        },
+        "diffStatsSummary": {
+          "$ref": "#/definitions/MergeRequestDiffStatsSummary"
         }
       }
     },
@@ -179,6 +182,23 @@
         "resolvedCount": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "MergeRequestDiffStatsSummary": {
+      "type": "object",
+      "properties": {
+        "additions": {
+          "type": "string",
+          "format": "int64"
+        },
+        "deletions": {
+          "type": "string",
+          "format": "int64"
+        },
+        "fileCount": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },

@@ -10,6 +10,7 @@ import (
 
 const (
 	tokenHeader = "Private-Token"
+	authHeader  = "Authorization"
 )
 
 type client struct {
@@ -192,4 +193,43 @@ func (c *client) getMergeRequestInfo(ctx context.Context, projectID, mergeReques
 	}
 
 	return res, nil
+}
+
+func (c *client) getProjectMergeRequestsGQ(ctx context.Context, projectFullPath string) ([]MergeRequestGQ, error) {
+	q := struct {
+		Query string `json:"query"`
+	}{
+		Query: fmt.Sprintf(projectMRsRequest, projectFullPath),
+	}
+	reqData, err := json.Marshal(q)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal projects merge request: %w", err)
+	}
+
+	data, err := request.POST(ctx,
+		request.MustURL(fmt.Sprintf("%s/api/graphql", c.baseURL)),
+		map[string]string{
+			authHeader:     fmt.Sprintf("Bearer %s", c.token),
+			"Content-Type": "application/json",
+		},
+		reqData,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get project merge requests from gitlab: %w", err)
+	}
+
+	res := struct {
+		Data struct {
+			Project struct {
+				MergeRequests struct {
+					Nodes []MergeRequestGQ `json:"nodes"`
+				} `json:"mergeRequests"`
+			} `json:"project"`
+		} `json:"data"`
+	}{}
+	if err = json.Unmarshal(data, &res); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal merge requests info: %w", err)
+	}
+
+	return res.Data.Project.MergeRequests.Nodes, nil
 }

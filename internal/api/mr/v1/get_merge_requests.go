@@ -78,6 +78,11 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 									Url: item.URL,
 								}
 							}),
+							DiffStatsSummary: &api.GetMergeRequestsResponse_MergeRequest_DiffStatsSummary{
+								Additions: item.DiffStatsSummary.Additions,
+								Deletions: item.DiffStatsSummary.Deletions,
+								FileCount: item.DiffStatsSummary.FileCount,
+							},
 						}
 					},
 				),

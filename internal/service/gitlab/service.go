@@ -17,6 +17,10 @@ func (s *Service) UpdateSettings(baseURL, token string) {
 	s.cl.token = token
 }
 
+func (s *Service) GetBaseURL() string {
+	return s.cl.baseURL
+}
+
 func (s *Service) GetProject(ctx context.Context, projectID int64) (Project, error) {
 	return s.cl.getProject(ctx, projectID)
 }
@@ -47,4 +51,8 @@ func (s *Service) GetMergeRequestCommits(ctx context.Context, projectID, mergeRe
 
 func (s *Service) GetMergeRequestInfo(ctx context.Context, projectID, mergeRequestIID int64) (MergeRequestInfo, error) {
 	return s.cl.getMergeRequestInfo(ctx, projectID, mergeRequestIID)
+}
+
+func (s *Service) GetProjectMergeRequestsGQ(ctx context.Context, projectPath string) ([]MergeRequestGQ, error) {
+	return s.cl.getProjectMergeRequestsGQ(ctx, projectPath)
 }

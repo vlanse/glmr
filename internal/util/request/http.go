@@ -1,6 +1,7 @@
 package request
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -9,7 +10,11 @@ import (
 )
 
 func GET(ctx context.Context, url string, headers map[string]string) ([]byte, error) {
-	return doRequest(ctx, http.MethodGet, url, headers)
+	return doRequest(ctx, http.MethodGet, url, headers, nil)
+}
+
+func POST(ctx context.Context, url string, headers map[string]string, body []byte) ([]byte, error) {
+	return doRequest(ctx, http.MethodPost, url, headers, io.NopCloser(bytes.NewBuffer(body)))
 }
 
 func MustURL(hostWithSchemaAndPath string, queryKV ...string) string {
@@ -33,11 +38,13 @@ func MustURL(hostWithSchemaAndPath string, queryKV ...string) string {
 	return u.String()
 }
 
-func doRequest(ctx context.Context, method string, url string, headers map[string]string) ([]byte, error) {
+func doRequest(ctx context.Context, method string, url string, headers map[string]string, body io.ReadCloser) ([]byte, error) {
 	req, _ := http.NewRequestWithContext(ctx, method, url, nil)
 	for k, v := range headers {
 		req.Header.Add(k, v)
 	}
+
+	req.Body = body
 
 	resp, err := http.DefaultClient.Do(req)
 

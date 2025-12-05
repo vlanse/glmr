@@ -64,21 +64,28 @@ type Issue struct {
 	URL string
 }
 
+type DiffStatsSummary struct {
+	Additions int64
+	Deletions int64
+	FileCount int64
+}
+
 type MergeRequest struct {
-	IID            int64 // "short" gitlab ID
-	Project        Project
-	CreatedAt      time.Time
-	Description    string
-	URL            string
-	Author         User
-	Approvals      []Approval
-	Commits        []Commit
-	Pipeline       Pipeline
-	Discussions    []Discussion
-	CommentStats   CommentStats
-	Status         Status
-	ApprovedBefore bool
-	Issues         []Issue
+	IID              int64 // "short" gitlab ID
+	Project          Project
+	CreatedAt        time.Time
+	Description      string
+	URL              string
+	Author           User
+	Approvals        []Approval
+	Commits          []Commit
+	Pipeline         Pipeline
+	Discussions      []Discussion
+	CommentStats     CommentStats
+	Status           Status
+	ApprovedBefore   bool
+	Issues           []Issue
+	DiffStatsSummary DiffStatsSummary
 }
 
 type ApprovalRule struct {
@@ -87,12 +94,13 @@ type ApprovalRule struct {
 }
 
 type Project struct {
-	ID            int64
-	Name          string
-	GroupName     string
-	WebURL        string
-	MergeRequests []MergeRequest
-	ApprovalRules []ApprovalRule
+	ID                int64
+	Name              string
+	GroupName         string
+	WebURL            string
+	PathWithNamespace string
+	MergeRequests     []MergeRequest
+	ApprovalRules     []ApprovalRule
 }
 
 type Summary struct {

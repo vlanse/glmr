@@ -75,13 +75,22 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 	projects := s.settings.GetProjects()
 
 	var err error
-	if projects, err = s.enrichProjectInfo(ctx, projects); err != nil {
+
+	if projects, err = s.enrichProjectInfoGQ(ctx, projects); err != nil {
 		return nil, err
 	}
 
-	if projects, err = s.enrichProjectMRInfo(ctx, projects); err != nil {
+	if projects, err = s.enrichProjectMRDiscussions(ctx, projects); err != nil {
 		return nil, err
 	}
+
+	// if projects, err = s.enrichProjectInfo(ctx, projects); err != nil {
+	// 	return nil, err
+	// }
+	//
+	// if projects, err = s.enrichProjectMRInfo(ctx, projects); err != nil {
+	// 	return nil, err
+	// }
 
 	projects = s.fillIssues(projects)
 

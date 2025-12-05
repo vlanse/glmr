@@ -59,6 +59,12 @@ message GetMergeRequestsResponse {
       string url = 2;
     }
 
+    message DiffStatsSummary {
+      int64 additions = 1;
+      int64 deletions = 2;
+      int64 fileCount = 3;
+    }
+
     Project project = 1;
     string url = 2;
     string description = 3;
@@ -70,6 +76,7 @@ message GetMergeRequestsResponse {
     bool approvedBefore = 9;
     int64 iid = 10;
     repeated Issue issues = 11;
+    DiffStatsSummary diffStatsSummary = 12;
   }
 
   message Group {
