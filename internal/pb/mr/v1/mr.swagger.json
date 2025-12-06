@@ -166,7 +166,15 @@
           "type": "integer",
           "format": "int32"
         },
+        "visible": {
+          "type": "integer",
+          "format": "int32"
+        },
         "overdue": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "overdueVisible": {
           "type": "integer",
           "format": "int32"
         }

@@ -28,8 +28,10 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 			return &api.GetMergeRequestsResponse_Group{
 				Name: item.GroupName,
 				Summary: &api.GetMergeRequestsResponse_Group_Summary{
-					Total:   int32(item.Summary.Total),
-					Overdue: int32(item.Summary.Overdue),
+					Total:          int32(item.Summary.Total),
+					Visible:        int32(item.Summary.Visible),
+					Overdue:        int32(item.Summary.Overdue),
+					OverdueVisible: int32(item.Summary.OverdueVisible),
 				},
 				MergeRequests: lo.Map(
 					item.MergeRequests,

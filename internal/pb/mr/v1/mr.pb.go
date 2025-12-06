@@ -756,11 +756,13 @@ func (x *GetMergeRequestsResponse_MergeRequest_DiffStatsSummary) GetFileCount() 
 }
 
 type GetMergeRequestsResponse_Group_Summary struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Total         int32                  `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
-	Overdue       int32                  `protobuf:"varint,2,opt,name=overdue,proto3" json:"overdue,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Total          int32                  `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	Visible        int32                  `protobuf:"varint,2,opt,name=visible,proto3" json:"visible,omitempty"`
+	Overdue        int32                  `protobuf:"varint,3,opt,name=overdue,proto3" json:"overdue,omitempty"`
+	OverdueVisible int32                  `protobuf:"varint,4,opt,name=overdueVisible,proto3" json:"overdueVisible,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *GetMergeRequestsResponse_Group_Summary) Reset() {
@@ -800,9 +802,23 @@ func (x *GetMergeRequestsResponse_Group_Summary) GetTotal() int32 {
 	return 0
 }
 
+func (x *GetMergeRequestsResponse_Group_Summary) GetVisible() int32 {
+	if x != nil {
+		return x.Visible
+	}
+	return 0
+}
+
 func (x *GetMergeRequestsResponse_Group_Summary) GetOverdue() int32 {
 	if x != nil {
 		return x.Overdue
+	}
+	return 0
+}
+
+func (x *GetMergeRequestsResponse_Group_Summary) GetOverdueVisible() int32 {
+	if x != nil {
+		return x.OverdueVisible
 	}
 	return 0
 }
@@ -818,7 +834,7 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"\x10skipApprovedByMe\x18\x01 \x01(\bR\x10skipApprovedByMe\x12\"\n" +
 	"\fshowOnlyMine\x18\x02 \x01(\bR\fshowOnlyMine\x12*\n" +
 	"\x10butStillShowMine\x18\x03 \x01(\bR\x10butStillShowMine\x12(\n" +
-	"\x0fdoNotShowDrafts\x18\x04 \x01(\bR\x0fdoNotShowDrafts\"\xa5\r\n" +
+	"\x0fdoNotShowDrafts\x18\x04 \x01(\bR\x0fdoNotShowDrafts\"\xe7\r\n" +
 	"\x18GetMergeRequestsResponse\x12=\n" +
 	"\x06groups\x18\x01 \x03(\v2%.mr.v1.GetMergeRequestsResponse.GroupR\x06groups\x1a\xd3\n" +
 	"\n" +
@@ -864,14 +880,16 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"\x10DiffStatsSummary\x12\x1c\n" +
 	"\tadditions\x18\x01 \x01(\x03R\tadditions\x12\x1c\n" +
 	"\tdeletions\x18\x02 \x01(\x03R\tdeletions\x12\x1c\n" +
-	"\tfileCount\x18\x03 \x01(\x03R\tfileCount\x1a\xf3\x01\n" +
+	"\tfileCount\x18\x03 \x01(\x03R\tfileCount\x1a\xb5\x02\n" +
 	"\x05Group\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12R\n" +
 	"\rmergeRequests\x18\x02 \x03(\v2,.mr.v1.GetMergeRequestsResponse.MergeRequestR\rmergeRequests\x12G\n" +
-	"\asummary\x18\x03 \x01(\v2-.mr.v1.GetMergeRequestsResponse.Group.SummaryR\asummary\x1a9\n" +
+	"\asummary\x18\x03 \x01(\v2-.mr.v1.GetMergeRequestsResponse.Group.SummaryR\asummary\x1a{\n" +
 	"\aSummary\x12\x14\n" +
 	"\x05total\x18\x01 \x01(\x05R\x05total\x12\x18\n" +
-	"\aoverdue\x18\x02 \x01(\x05R\aoverdue2\x88\x01\n" +
+	"\avisible\x18\x02 \x01(\x05R\avisible\x12\x18\n" +
+	"\aoverdue\x18\x03 \x01(\x05R\aoverdue\x12&\n" +
+	"\x0eoverdueVisible\x18\x04 \x01(\x05R\x0eoverdueVisible2\x88\x01\n" +
 	"\rMergeRequests\x12w\n" +
 	"\x10GetMergeRequests\x12\x1e.mr.v1.GetMergeRequestsRequest\x1a\x1f.mr.v1.GetMergeRequestsResponse\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/mr/v1/GetMergeRequestsB$Z\"github.com/vlanse/glmr/proto/mr/v1b\x06proto3"
 

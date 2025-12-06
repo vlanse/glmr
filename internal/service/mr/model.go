@@ -104,8 +104,10 @@ type Project struct {
 }
 
 type Summary struct {
-	Total   int
-	Overdue int
+	Total          int
+	Visible        int
+	Overdue        int
+	OverdueVisible int
 }
 type MergeRequestsGroup struct {
 	GroupName     string

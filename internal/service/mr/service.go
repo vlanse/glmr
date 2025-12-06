@@ -84,14 +84,6 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 		return nil, err
 	}
 
-	// if projects, err = s.enrichProjectInfo(ctx, projects); err != nil {
-	// 	return nil, err
-	// }
-	//
-	// if projects, err = s.enrichProjectMRInfo(ctx, projects); err != nil {
-	// 	return nil, err
-	// }
-
 	projects = s.fillIssues(projects)
 
 	projects = fillOwners(projects)
@@ -109,6 +101,8 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 	groups = fillGroupSummaries(groups)
 
 	groups = filterMergeRequests(groups, currentUserName, filter)
+
+	groups = fillFilteredGroupSummaries(groups)
 
 	for _, g := range groups {
 		sort.SliceStable(g.MergeRequests, func(i, j int) bool {
@@ -184,6 +178,18 @@ func filterMergeRequests(groups []MergeRequestsGroup, currentUsername string, fi
 			}
 			return true
 		})
+	}
+	return groups
+}
+
+func fillFilteredGroupSummaries(groups []MergeRequestsGroup) []MergeRequestsGroup {
+	for i, g := range groups {
+		for _, mr := range g.MergeRequests {
+			groups[i].Summary.Visible++
+			if mr.Status.Outdated {
+				groups[i].Summary.OverdueVisible++
+			}
+		}
 	}
 	return groups
 }

@@ -82,7 +82,9 @@ message GetMergeRequestsResponse {
   message Group {
     message Summary {
       int32 total = 1;
-      int32 overdue = 2;
+      int32 visible = 2;
+      int32 overdue = 3;
+      int32 overdueVisible = 4;
     }
 
     string name = 1;
