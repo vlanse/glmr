@@ -8,7 +8,7 @@ Client-side web application for viewing Gitlab MRs of interest.
 ## Features:
 - grouping projects by user preference
 - filtering MRs (drafts, approvals)
-- MR highlights: pipeline status, merge conflicts, unresolved discussions, overdue MRs
+- MR highlights: pipeline status, merge conflicts, unresolved discussions, overdue MRs, diff summary
 - web notifications about fresh MRs
 - editor integration: open projects in local editor right from UI
 - JIRA integration: open tickets linked to MRs
@@ -59,7 +59,7 @@ Web interface available at http://localhost:8082
 
 Open Web UI in your favourite browser:
 
-<img alt="GLMR web UI" src="https://github.com/user-attachments/assets/ce517e9c-b7a6-44bf-ab63-d5446784e7f0" />
+<img alt="GLMR web UI" src="https://github.com/user-attachments/assets/7b7cff0e-5d88-40b6-b025-15ee6e469b3f" />
 
 ## Development notes
 
