@@ -10,6 +10,7 @@ type Filter struct {
 }
 
 type User struct {
+	ID        int64 `json:"id"`
 	Username  string
 	AvatarURL string
 	IsOwner   bool
@@ -44,6 +45,7 @@ type Discussion struct {
 
 type Pipeline struct {
 	Status string
+	WebURL string
 }
 
 type CommentStats struct {

@@ -33,7 +33,8 @@ type Service struct {
 	currentUser *User
 	dataMx      sync.Mutex
 
-	projectsByID map[int64]gitlab.Project
+	projectsByID    map[int64]gitlab.Project
+	starredProjects []gitlab.Project
 }
 
 func NewService(gitlabSvc *gitlab.Service) *Service {
@@ -61,6 +62,7 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 				return fmt.Errorf("could not get current user information: %w", err)
 			}
 			s.currentUser = &User{
+				ID:        user.ID,
 				Username:  user.Username,
 				AvatarURL: user.AvatarURL,
 				WebURL:    user.WebURL,
@@ -72,11 +74,19 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 		return nil, err
 	}
 
-	projects := s.settings.GetProjects()
-
 	var err error
 
-	if projects, err = s.enrichProjectInfoGQ(ctx, projects); err != nil {
+	var starredProjects []gitlab.Project
+	if s.settings.ShowStarred {
+		starredProjects, err = s.gitlabSvc.GetStarredProjects(ctx, s.currentUser.ID)
+		if err != nil {
+			return nil, fmt.Errorf("could not get starred projects: %w", err)
+		}
+	}
+
+	projects := s.settings.GetProjects(starredProjects)
+
+	if projects, err = s.enrichProjectInfo(ctx, projects); err != nil {
 		return nil, err
 	}
 

@@ -29,5 +29,7 @@ type Config struct {
 		Cmd string `yaml:"cmd"`
 	}
 
+	ShowStarred bool `yaml:"show_starred"`
+
 	Groups []Group `yaml:"groups"`
 }

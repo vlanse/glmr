@@ -65,6 +65,10 @@ message GetMergeRequestsResponse {
       int64 fileCount = 3;
     }
 
+    message Pipeline {
+      string webUrl = 1;
+    }
+
     Project project = 1;
     string url = 2;
     string description = 3;
@@ -77,6 +81,7 @@ message GetMergeRequestsResponse {
     int64 iid = 10;
     repeated Issue issues = 11;
     DiffStatsSummary diffStatsSummary = 12;
+    Pipeline headPipeline = 13;
   }
 
   message Group {

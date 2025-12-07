@@ -133,6 +133,9 @@
         },
         "diffStatsSummary": {
           "$ref": "#/definitions/MergeRequestDiffStatsSummary"
+        },
+        "headPipeline": {
+          "$ref": "#/definitions/MergeRequestPipeline"
         }
       }
     },
@@ -217,6 +220,14 @@
           "type": "string"
         },
         "url": {
+          "type": "string"
+        }
+      }
+    },
+    "MergeRequestPipeline": {
+      "type": "object",
+      "properties": {
+        "webUrl": {
           "type": "string"
         }
       }

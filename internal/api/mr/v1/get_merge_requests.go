@@ -85,6 +85,9 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 								Deletions: item.DiffStatsSummary.Deletions,
 								FileCount: item.DiffStatsSummary.FileCount,
 							},
+							HeadPipeline: &api.GetMergeRequestsResponse_MergeRequest_Pipeline{
+								WebUrl: item.Pipeline.WebURL,
+							},
 						}
 					},
 				),

@@ -66,7 +66,26 @@ func (c *client) getProject(ctx context.Context, projectID int64) (Project, erro
 	}
 
 	return res, nil
+}
 
+func (c *client) getStarredProjects(ctx context.Context, userID int64) ([]Project, error) {
+	data, err := request.GET(
+		ctx,
+		request.MustURL(fmt.Sprintf("%s/api/v4/users/%d/starred_projects", c.baseURL, userID)),
+		map[string]string{
+			tokenHeader: c.token,
+		},
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get starred projects from gitlab: %w", err)
+	}
+
+	var res []Project
+	if err = json.Unmarshal(data, &res); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal starred projects info: %w", err)
+	}
+
+	return res, nil
 }
 
 func (c *client) getApprovalRules(ctx context.Context, projectID int64) ([]ApprovalRule, error) {

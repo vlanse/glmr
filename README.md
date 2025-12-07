@@ -1,5 +1,5 @@
 # GLMR
-v0.0.18
+v0.0.19
 
 aka **G**it**L**ab **M**erge **R**equests
 
@@ -12,6 +12,7 @@ Client-side web application for viewing Gitlab MRs of interest.
 - web notifications about fresh MRs
 - editor integration: open projects in local editor right from UI
 - JIRA integration: open tickets linked to MRs
+- starred projects could be included as special separate group
 
 ## Installation
 
@@ -20,7 +21,8 @@ go install github.com/vlanse/glmr/cmd/glmr@latest
 ```
 
 ## Run
-Prepare configuration file and put it in home dir (btw, configuration file is being watched for changes, so program restart is not needed). 
+Prepare configuration file and put it in home dir 
+(btw, configuration file is being watched for changes, so program restart is not needed). 
 
 Example:
 ```yaml
@@ -33,6 +35,8 @@ jira: # optional section for JIRA integration
   
 editor: # optional section for editor integration
   cmd: "/bin/my-favourite-editor {project_path}" # pay attention to {project_path}, it will be replaced by actual project path
+
+show_starred: true # add if you want to include starred projects as separate group
 
 groups:
   - name: some group of projects

@@ -25,6 +25,10 @@ func (s *Service) GetProject(ctx context.Context, projectID int64) (Project, err
 	return s.cl.getProject(ctx, projectID)
 }
 
+func (s *Service) GetStarredProjects(ctx context.Context, userID int64) ([]Project, error) {
+	return s.cl.getStarredProjects(ctx, userID)
+}
+
 func (s *Service) GetApprovalRules(ctx context.Context, projectID int64) ([]ApprovalRule, error) {
 	return s.cl.getApprovalRules(ctx, projectID)
 }

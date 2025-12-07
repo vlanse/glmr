@@ -121,6 +121,7 @@ func (a *App) updateConfig(cfg Config) {
 				}),
 			}
 		}),
+		ShowStarred: cfg.ShowStarred,
 	}
 	a.mrSvc.UpdateSettings(mrSettings)
 

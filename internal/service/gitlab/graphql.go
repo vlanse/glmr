@@ -46,6 +46,7 @@ const (
         headPipeline {
           id
           status
+          path
         }
         diffStatsSummary {
           additions

@@ -6,6 +6,7 @@ type Project struct {
 	ID                int64  `json:"id"`
 	WebURL            string `json:"web_url"`
 	PathWithNamespace string `json:"path_with_namespace"`
+	Name              string `json:"name"`
 }
 
 type MergeRequest struct {
@@ -35,6 +36,7 @@ type ApprovalRule struct {
 }
 
 type User struct {
+	ID          int64  `json:"id"`
 	Username    string `json:"username"`
 	AvatarURL   string `json:"avatar_url"`
 	WebURL      string `json:"web_url"`
@@ -103,6 +105,7 @@ type UserGQ struct {
 type PipelineGQ struct {
 	ID     string `json:"id"`
 	Status string `json:"status"`
+	Path   string `json:"path"`
 }
 
 type DiffStatsGQ struct {

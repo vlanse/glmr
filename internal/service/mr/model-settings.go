@@ -1,6 +1,9 @@
 package mr
 
-import "github.com/samber/lo"
+import (
+	"github.com/samber/lo"
+	"github.com/vlanse/glmr/internal/service/gitlab"
+)
 
 type ProjectSettings struct {
 	Name string
@@ -29,12 +32,14 @@ type JIRA struct {
 }
 
 type Settings struct {
-	Groups []ProjectGroupSettings
-	JIRA   JIRA
+	Groups      []ProjectGroupSettings
+	JIRA        JIRA
+	ShowStarred bool
 }
 
-func (s *Settings) GetProjects() []Project {
+func (s Settings) GetProjects(starred []gitlab.Project) []Project {
 	var projects []Project
+	var userAddedIDs []int64
 	for _, group := range s.Groups {
 		for _, project := range group.Projects {
 			projects = append(projects, Project{
@@ -42,7 +47,19 @@ func (s *Settings) GetProjects() []Project {
 				Name:      project.Name,
 				GroupName: group.Name,
 			})
+			userAddedIDs = append(userAddedIDs, project.ID)
 		}
+	}
+
+	for _, p := range starred {
+		if lo.Contains(userAddedIDs, p.ID) {
+			continue
+		}
+		projects = append(projects, Project{
+			ID:        p.ID,
+			Name:      p.Name,
+			GroupName: "starred on GitLab",
+		})
 	}
 	return projects
 }

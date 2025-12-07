@@ -73,7 +73,7 @@ func (s *Service) enrichProjectMRDiscussions(ctx context.Context, projects []Pro
 	return projects, nil
 }
 
-func (s *Service) enrichProjectInfoGQ(ctx context.Context, projects []Project) ([]Project, error) {
+func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]Project, error) {
 	allProjectIDs := lo.Map(projects, func(item Project, _ int) int64 {
 		return item.ID
 	})
@@ -168,6 +168,7 @@ func (s *Service) enrichProjectInfoGQ(ctx context.Context, projects []Project) (
 				}),
 				Pipeline: Pipeline{
 					Status: strings.ToLower(mr.HeadPipeline.Status),
+					WebURL: s.fixURL(mr.HeadPipeline.Path),
 				},
 				Status: Status{
 					Conflict: mr.Conflicts,
