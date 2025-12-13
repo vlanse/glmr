@@ -813,6 +813,8 @@ type GetMergeRequestsResponse_Group_Summary struct {
 	Visible        int32                  `protobuf:"varint,2,opt,name=visible,proto3" json:"visible,omitempty"`
 	Overdue        int32                  `protobuf:"varint,3,opt,name=overdue,proto3" json:"overdue,omitempty"`
 	OverdueVisible int32                  `protobuf:"varint,4,opt,name=overdueVisible,proto3" json:"overdueVisible,omitempty"`
+	Draft          int32                  `protobuf:"varint,5,opt,name=draft,proto3" json:"draft,omitempty"`
+	DraftVisible   int32                  `protobuf:"varint,6,opt,name=draftVisible,proto3" json:"draftVisible,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -875,6 +877,20 @@ func (x *GetMergeRequestsResponse_Group_Summary) GetOverdueVisible() int32 {
 	return 0
 }
 
+func (x *GetMergeRequestsResponse_Group_Summary) GetDraft() int32 {
+	if x != nil {
+		return x.Draft
+	}
+	return 0
+}
+
+func (x *GetMergeRequestsResponse_Group_Summary) GetDraftVisible() int32 {
+	if x != nil {
+		return x.DraftVisible
+	}
+	return 0
+}
+
 var File_mr_v1_mr_proto protoreflect.FileDescriptor
 
 const file_mr_v1_mr_proto_rawDesc = "" +
@@ -886,7 +902,7 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"\x10skipApprovedByMe\x18\x01 \x01(\bR\x10skipApprovedByMe\x12\"\n" +
 	"\fshowOnlyMine\x18\x02 \x01(\bR\fshowOnlyMine\x12*\n" +
 	"\x10butStillShowMine\x18\x03 \x01(\bR\x10butStillShowMine\x12(\n" +
-	"\x0fdoNotShowDrafts\x18\x04 \x01(\bR\x0fdoNotShowDrafts\"\xe6\x0e\n" +
+	"\x0fdoNotShowDrafts\x18\x04 \x01(\bR\x0fdoNotShowDrafts\"\xa1\x0f\n" +
 	"\x18GetMergeRequestsResponse\x12=\n" +
 	"\x06groups\x18\x01 \x03(\v2%.mr.v1.GetMergeRequestsResponse.GroupR\x06groups\x1a\xd2\v\n" +
 	"\fMergeRequest\x12N\n" +
@@ -934,16 +950,18 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"\tdeletions\x18\x02 \x01(\x03R\tdeletions\x12\x1c\n" +
 	"\tfileCount\x18\x03 \x01(\x03R\tfileCount\x1a\"\n" +
 	"\bPipeline\x12\x16\n" +
-	"\x06webUrl\x18\x01 \x01(\tR\x06webUrl\x1a\xb5\x02\n" +
+	"\x06webUrl\x18\x01 \x01(\tR\x06webUrl\x1a\xf0\x02\n" +
 	"\x05Group\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12R\n" +
 	"\rmergeRequests\x18\x02 \x03(\v2,.mr.v1.GetMergeRequestsResponse.MergeRequestR\rmergeRequests\x12G\n" +
-	"\asummary\x18\x03 \x01(\v2-.mr.v1.GetMergeRequestsResponse.Group.SummaryR\asummary\x1a{\n" +
+	"\asummary\x18\x03 \x01(\v2-.mr.v1.GetMergeRequestsResponse.Group.SummaryR\asummary\x1a\xb5\x01\n" +
 	"\aSummary\x12\x14\n" +
 	"\x05total\x18\x01 \x01(\x05R\x05total\x12\x18\n" +
 	"\avisible\x18\x02 \x01(\x05R\avisible\x12\x18\n" +
 	"\aoverdue\x18\x03 \x01(\x05R\aoverdue\x12&\n" +
-	"\x0eoverdueVisible\x18\x04 \x01(\x05R\x0eoverdueVisible2\x88\x01\n" +
+	"\x0eoverdueVisible\x18\x04 \x01(\x05R\x0eoverdueVisible\x12\x14\n" +
+	"\x05draft\x18\x05 \x01(\x05R\x05draft\x12\"\n" +
+	"\fdraftVisible\x18\x06 \x01(\x05R\fdraftVisible2\x88\x01\n" +
 	"\rMergeRequests\x12w\n" +
 	"\x10GetMergeRequests\x12\x1e.mr.v1.GetMergeRequestsRequest\x1a\x1f.mr.v1.GetMergeRequestsResponse\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/mr/v1/GetMergeRequestsB$Z\"github.com/vlanse/glmr/proto/mr/v1b\x06proto3"
 

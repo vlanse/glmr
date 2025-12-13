@@ -150,6 +150,7 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 				CreatedAt:   mr.CreatedAt,
 				Description: mr.Title,
 				URL:         mr.WebURL,
+				Draft:       mr.Draft,
 				Author: User{
 					Username:  mr.Author.Username,
 					AvatarURL: s.fixURL(mr.Author.AvatarURL),

@@ -32,6 +32,8 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 					Visible:        int32(item.Summary.Visible),
 					Overdue:        int32(item.Summary.Overdue),
 					OverdueVisible: int32(item.Summary.OverdueVisible),
+					Draft:          int32(item.Summary.Draft),
+					DraftVisible:   int32(item.Summary.DraftVisible),
 				},
 				MergeRequests: lo.Map(
 					item.MergeRequests,

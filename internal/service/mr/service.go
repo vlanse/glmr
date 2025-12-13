@@ -157,6 +157,9 @@ func fillGroupSummaries(groups []MergeRequestsGroup) []MergeRequestsGroup {
 			if mr.Status.Outdated {
 				groups[i].Summary.Overdue++
 			}
+			if mr.Draft {
+				groups[i].Summary.Draft++
+			}
 		}
 	}
 	return groups
@@ -167,10 +170,8 @@ func filterMergeRequests(groups []MergeRequestsGroup, currentUsername string, fi
 		groups[i].MergeRequests = lo.Filter(group.MergeRequests, func(item MergeRequest, _ int) bool {
 			stillShowMine := filter.ButStillShowMine && item.Author.Username == currentUsername
 
-			if filter.DoNotShowDrafts && strings.HasPrefix(item.Description, "Draft:") {
-				if !stillShowMine {
-					return false
-				}
+			if filter.DoNotShowDrafts && item.Draft && !stillShowMine {
+				return false
 			}
 
 			if filter.SkipApprovedByMe {
@@ -198,6 +199,9 @@ func fillFilteredGroupSummaries(groups []MergeRequestsGroup) []MergeRequestsGrou
 			groups[i].Summary.Visible++
 			if mr.Status.Outdated {
 				groups[i].Summary.OverdueVisible++
+			}
+			if mr.Draft {
+				groups[i].Summary.DraftVisible++
 			}
 		}
 	}

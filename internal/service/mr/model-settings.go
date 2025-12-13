@@ -58,7 +58,7 @@ func (s Settings) GetProjects(starred []gitlab.Project) []Project {
 		projects = append(projects, Project{
 			ID:        p.ID,
 			Name:      p.Name,
-			GroupName: "starred on GitLab",
+			GroupName: "starred projects",
 		})
 	}
 	return projects

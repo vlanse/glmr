@@ -13,6 +13,7 @@ const (
         updatedAt
         webUrl
         conflicts
+		draft
         title
         state
         committers {

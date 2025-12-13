@@ -180,6 +180,14 @@
         "overdueVisible": {
           "type": "integer",
           "format": "int32"
+        },
+        "draft": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "draftVisible": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

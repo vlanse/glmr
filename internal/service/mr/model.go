@@ -78,6 +78,7 @@ type MergeRequest struct {
 	CreatedAt        time.Time
 	Description      string
 	URL              string
+	Draft            bool
 	Author           User
 	Approvals        []Approval
 	Commits          []Commit
@@ -110,6 +111,8 @@ type Summary struct {
 	Visible        int
 	Overdue        int
 	OverdueVisible int
+	Draft          int
+	DraftVisible   int
 }
 type MergeRequestsGroup struct {
 	GroupName     string

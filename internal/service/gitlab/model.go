@@ -121,6 +121,7 @@ type MergeRequestGQ struct {
 	CreatedAt  time.Time `json:"createdAt"`
 	UpdatedAt  time.Time `json:"updatedAt"`
 	WebURL     string    `json:"webUrl"`
+	Draft      bool      `json:"draft"`
 	Conflicts  bool      `json:"conflicts"`
 	Title      string    `json:"title"`
 	State      string    `json:"state"`
