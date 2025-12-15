@@ -7,7 +7,7 @@ Client-side web application for viewing Gitlab MRs of interest.
 
 ## Features:
 - grouping projects by user preference
-- filtering MRs (drafts, approvals)
+- filtering MRs (drafts, approvals, "my" MRs etc)
 - MR highlights: pipeline status, merge conflicts, unresolved discussions, overdue MRs, diff summary
 - web notifications about fresh MRs
 - editor integration: open projects in local editor right from UI
