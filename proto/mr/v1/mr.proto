@@ -69,6 +69,11 @@ message GetMergeRequestsResponse {
       string webUrl = 1;
     }
 
+    message Link {
+      string displayName = 1;
+      string url = 2;
+    }
+
     Project project = 1;
     string url = 2;
     string description = 3;
@@ -82,6 +87,7 @@ message GetMergeRequestsResponse {
     repeated Issue issues = 11;
     DiffStatsSummary diffStatsSummary = 12;
     Pipeline headPipeline = 13;
+    repeated Link links = 14;
   }
 
   message Group {

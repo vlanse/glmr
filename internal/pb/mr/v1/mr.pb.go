@@ -194,6 +194,7 @@ type GetMergeRequestsResponse_MergeRequest struct {
 	Issues           []*GetMergeRequestsResponse_MergeRequest_Issue          `protobuf:"bytes,11,rep,name=issues,proto3" json:"issues,omitempty"`
 	DiffStatsSummary *GetMergeRequestsResponse_MergeRequest_DiffStatsSummary `protobuf:"bytes,12,opt,name=diffStatsSummary,proto3" json:"diffStatsSummary,omitempty"`
 	HeadPipeline     *GetMergeRequestsResponse_MergeRequest_Pipeline         `protobuf:"bytes,13,opt,name=headPipeline,proto3" json:"headPipeline,omitempty"`
+	Links            []*GetMergeRequestsResponse_MergeRequest_Link           `protobuf:"bytes,14,rep,name=links,proto3" json:"links,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -315,6 +316,13 @@ func (x *GetMergeRequestsResponse_MergeRequest) GetDiffStatsSummary() *GetMergeR
 func (x *GetMergeRequestsResponse_MergeRequest) GetHeadPipeline() *GetMergeRequestsResponse_MergeRequest_Pipeline {
 	if x != nil {
 		return x.HeadPipeline
+	}
+	return nil
+}
+
+func (x *GetMergeRequestsResponse_MergeRequest) GetLinks() []*GetMergeRequestsResponse_MergeRequest_Link {
+	if x != nil {
+		return x.Links
 	}
 	return nil
 }
@@ -807,6 +815,58 @@ func (x *GetMergeRequestsResponse_MergeRequest_Pipeline) GetWebUrl() string {
 	return ""
 }
 
+type GetMergeRequestsResponse_MergeRequest_Link struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DisplayName   string                 `protobuf:"bytes,1,opt,name=displayName,proto3" json:"displayName,omitempty"`
+	Url           string                 `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMergeRequestsResponse_MergeRequest_Link) Reset() {
+	*x = GetMergeRequestsResponse_MergeRequest_Link{}
+	mi := &file_mr_v1_mr_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMergeRequestsResponse_MergeRequest_Link) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMergeRequestsResponse_MergeRequest_Link) ProtoMessage() {}
+
+func (x *GetMergeRequestsResponse_MergeRequest_Link) ProtoReflect() protoreflect.Message {
+	mi := &file_mr_v1_mr_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMergeRequestsResponse_MergeRequest_Link.ProtoReflect.Descriptor instead.
+func (*GetMergeRequestsResponse_MergeRequest_Link) Descriptor() ([]byte, []int) {
+	return file_mr_v1_mr_proto_rawDescGZIP(), []int{1, 0, 7}
+}
+
+func (x *GetMergeRequestsResponse_MergeRequest_Link) GetDisplayName() string {
+	if x != nil {
+		return x.DisplayName
+	}
+	return ""
+}
+
+func (x *GetMergeRequestsResponse_MergeRequest_Link) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
 type GetMergeRequestsResponse_Group_Summary struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Total          int32                  `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
@@ -821,7 +881,7 @@ type GetMergeRequestsResponse_Group_Summary struct {
 
 func (x *GetMergeRequestsResponse_Group_Summary) Reset() {
 	*x = GetMergeRequestsResponse_Group_Summary{}
-	mi := &file_mr_v1_mr_proto_msgTypes[12]
+	mi := &file_mr_v1_mr_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -833,7 +893,7 @@ func (x *GetMergeRequestsResponse_Group_Summary) String() string {
 func (*GetMergeRequestsResponse_Group_Summary) ProtoMessage() {}
 
 func (x *GetMergeRequestsResponse_Group_Summary) ProtoReflect() protoreflect.Message {
-	mi := &file_mr_v1_mr_proto_msgTypes[12]
+	mi := &file_mr_v1_mr_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -902,9 +962,9 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"\x10skipApprovedByMe\x18\x01 \x01(\bR\x10skipApprovedByMe\x12\"\n" +
 	"\fshowOnlyMine\x18\x02 \x01(\bR\fshowOnlyMine\x12*\n" +
 	"\x10butStillShowMine\x18\x03 \x01(\bR\x10butStillShowMine\x12(\n" +
-	"\x0fdoNotShowDrafts\x18\x04 \x01(\bR\x0fdoNotShowDrafts\"\xa1\x0f\n" +
+	"\x0fdoNotShowDrafts\x18\x04 \x01(\bR\x0fdoNotShowDrafts\"\xa6\x10\n" +
 	"\x18GetMergeRequestsResponse\x12=\n" +
-	"\x06groups\x18\x01 \x03(\v2%.mr.v1.GetMergeRequestsResponse.GroupR\x06groups\x1a\xd2\v\n" +
+	"\x06groups\x18\x01 \x03(\v2%.mr.v1.GetMergeRequestsResponse.GroupR\x06groups\x1a\xd7\f\n" +
 	"\fMergeRequest\x12N\n" +
 	"\aproject\x18\x01 \x01(\v24.mr.v1.GetMergeRequestsResponse.MergeRequest.ProjectR\aproject\x12\x10\n" +
 	"\x03url\x18\x02 \x01(\tR\x03url\x12 \n" +
@@ -921,7 +981,8 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	" \x01(\x03R\x03iid\x12J\n" +
 	"\x06issues\x18\v \x03(\v22.mr.v1.GetMergeRequestsResponse.MergeRequest.IssueR\x06issues\x12i\n" +
 	"\x10diffStatsSummary\x18\f \x01(\v2=.mr.v1.GetMergeRequestsResponse.MergeRequest.DiffStatsSummaryR\x10diffStatsSummary\x12Y\n" +
-	"\fheadPipeline\x18\r \x01(\v25.mr.v1.GetMergeRequestsResponse.MergeRequest.PipelineR\fheadPipeline\x1a\x80\x01\n" +
+	"\fheadPipeline\x18\r \x01(\v25.mr.v1.GetMergeRequestsResponse.MergeRequest.PipelineR\fheadPipeline\x12G\n" +
+	"\x05links\x18\x0e \x03(\v21.mr.v1.GetMergeRequestsResponse.MergeRequest.LinkR\x05links\x1a\x80\x01\n" +
 	"\x04User\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1c\n" +
 	"\tavatarUrl\x18\x02 \x01(\tR\tavatarUrl\x12\x18\n" +
@@ -950,7 +1011,10 @@ const file_mr_v1_mr_proto_rawDesc = "" +
 	"\tdeletions\x18\x02 \x01(\x03R\tdeletions\x12\x1c\n" +
 	"\tfileCount\x18\x03 \x01(\x03R\tfileCount\x1a\"\n" +
 	"\bPipeline\x12\x16\n" +
-	"\x06webUrl\x18\x01 \x01(\tR\x06webUrl\x1a\xf0\x02\n" +
+	"\x06webUrl\x18\x01 \x01(\tR\x06webUrl\x1a:\n" +
+	"\x04Link\x12 \n" +
+	"\vdisplayName\x18\x01 \x01(\tR\vdisplayName\x12\x10\n" +
+	"\x03url\x18\x02 \x01(\tR\x03url\x1a\xf0\x02\n" +
 	"\x05Group\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12R\n" +
 	"\rmergeRequests\x18\x02 \x03(\v2,.mr.v1.GetMergeRequestsResponse.MergeRequestR\rmergeRequests\x12G\n" +
@@ -977,7 +1041,7 @@ func file_mr_v1_mr_proto_rawDescGZIP() []byte {
 	return file_mr_v1_mr_proto_rawDescData
 }
 
-var file_mr_v1_mr_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_mr_v1_mr_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_mr_v1_mr_proto_goTypes = []any{
 	(*GetMergeRequestsRequest)(nil),                                // 0: mr.v1.GetMergeRequestsRequest
 	(*GetMergeRequestsResponse)(nil),                               // 1: mr.v1.GetMergeRequestsResponse
@@ -991,7 +1055,8 @@ var file_mr_v1_mr_proto_goTypes = []any{
 	(*GetMergeRequestsResponse_MergeRequest_Issue)(nil),            // 9: mr.v1.GetMergeRequestsResponse.MergeRequest.Issue
 	(*GetMergeRequestsResponse_MergeRequest_DiffStatsSummary)(nil), // 10: mr.v1.GetMergeRequestsResponse.MergeRequest.DiffStatsSummary
 	(*GetMergeRequestsResponse_MergeRequest_Pipeline)(nil),         // 11: mr.v1.GetMergeRequestsResponse.MergeRequest.Pipeline
-	(*GetMergeRequestsResponse_Group_Summary)(nil),                 // 12: mr.v1.GetMergeRequestsResponse.Group.Summary
+	(*GetMergeRequestsResponse_MergeRequest_Link)(nil),             // 12: mr.v1.GetMergeRequestsResponse.MergeRequest.Link
+	(*GetMergeRequestsResponse_Group_Summary)(nil),                 // 13: mr.v1.GetMergeRequestsResponse.Group.Summary
 }
 var file_mr_v1_mr_proto_depIdxs = []int32{
 	2,  // 0: mr.v1.GetMergeRequestsRequest.filter:type_name -> mr.v1.GetMergeRequestsRequest.Filter
@@ -1004,15 +1069,16 @@ var file_mr_v1_mr_proto_depIdxs = []int32{
 	9,  // 7: mr.v1.GetMergeRequestsResponse.MergeRequest.issues:type_name -> mr.v1.GetMergeRequestsResponse.MergeRequest.Issue
 	10, // 8: mr.v1.GetMergeRequestsResponse.MergeRequest.diffStatsSummary:type_name -> mr.v1.GetMergeRequestsResponse.MergeRequest.DiffStatsSummary
 	11, // 9: mr.v1.GetMergeRequestsResponse.MergeRequest.headPipeline:type_name -> mr.v1.GetMergeRequestsResponse.MergeRequest.Pipeline
-	3,  // 10: mr.v1.GetMergeRequestsResponse.Group.mergeRequests:type_name -> mr.v1.GetMergeRequestsResponse.MergeRequest
-	12, // 11: mr.v1.GetMergeRequestsResponse.Group.summary:type_name -> mr.v1.GetMergeRequestsResponse.Group.Summary
-	0,  // 12: mr.v1.MergeRequests.GetMergeRequests:input_type -> mr.v1.GetMergeRequestsRequest
-	1,  // 13: mr.v1.MergeRequests.GetMergeRequests:output_type -> mr.v1.GetMergeRequestsResponse
-	13, // [13:14] is the sub-list for method output_type
-	12, // [12:13] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	12, // 10: mr.v1.GetMergeRequestsResponse.MergeRequest.links:type_name -> mr.v1.GetMergeRequestsResponse.MergeRequest.Link
+	3,  // 11: mr.v1.GetMergeRequestsResponse.Group.mergeRequests:type_name -> mr.v1.GetMergeRequestsResponse.MergeRequest
+	13, // 12: mr.v1.GetMergeRequestsResponse.Group.summary:type_name -> mr.v1.GetMergeRequestsResponse.Group.Summary
+	0,  // 13: mr.v1.MergeRequests.GetMergeRequests:input_type -> mr.v1.GetMergeRequestsRequest
+	1,  // 14: mr.v1.MergeRequests.GetMergeRequests:output_type -> mr.v1.GetMergeRequestsResponse
+	14, // [14:15] is the sub-list for method output_type
+	13, // [13:14] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_mr_v1_mr_proto_init() }
@@ -1026,7 +1092,7 @@ func file_mr_v1_mr_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_mr_v1_mr_proto_rawDesc), len(file_mr_v1_mr_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

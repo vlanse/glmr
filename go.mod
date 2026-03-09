@@ -18,6 +18,7 @@ require (
 	github.com/google/go-github/v76 v76.0.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3
 	github.com/samber/lo v1.52.0
+	github.com/spf13/cast v1.10.0
 	github.com/swaggest/swgui v1.8.5
 	google.golang.org/genproto/googleapis/api v0.0.0-20251202230838-ff82c1b0f217
 	google.golang.org/grpc v1.77.0

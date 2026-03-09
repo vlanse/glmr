@@ -4,15 +4,23 @@ const (
 	configFilename = "glmr-config.yaml"
 )
 
+type Attrs map[string]any
+
 type Project struct {
-	ID   int64  `yaml:"id"`
-	Name string `yaml:"name"`
-	Path string `yaml:"path"`
+	Attrs Attrs  `yaml:",inline"`
+	ID    int64  `yaml:"id"`
+	Name  string `yaml:"name"`
+	Path  string `yaml:"path"`
 }
 
 type Group struct {
 	Name     string    `yaml:"name"`
 	Projects []Project `yaml:"projects"`
+}
+
+type ProjectLink struct {
+	DisplayName string `yaml:"display_name"`
+	Template    string `yaml:"template"`
 }
 
 type Config struct {
@@ -32,4 +40,6 @@ type Config struct {
 	ShowStarred bool `yaml:"show_starred"`
 
 	Groups []Group `yaml:"groups"`
+
+	ProjectLinks []ProjectLink `yaml:"project_links"`
 }

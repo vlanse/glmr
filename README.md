@@ -13,6 +13,7 @@ Client-side web application for viewing Gitlab MRs of interest.
 - editor integration: open projects in local editor right from UI
 - JIRA integration: open tickets linked to MRs
 - starred projects could be included as special separate group
+- [custom links](#custom-links)
 
 ## Installation
 
@@ -37,6 +38,12 @@ editor: # optional section for editor integration
   cmd: "/bin/my-favourite-editor {project_path}" # pay attention to {project_path}, it will be replaced by actual project path
 
 show_starred: true # add if you want to include starred projects as separate group
+
+project_links: # custom links template configuration
+  - display_name: 'Some site'
+    template: https://test.com/{id}/{other_id}
+  - display_name: 'Other site'
+    template: https://foo.bar/{id}
 
 groups:
   - name: some group of projects
@@ -64,6 +71,33 @@ Web interface available at http://localhost:8082
 Open Web UI in your favourite browser:
 
 <img alt="GLMR web UI" src="https://github.com/user-attachments/assets/7b7cff0e-5d88-40b6-b025-15ee6e469b3f" />
+
+### Custom links
+
+For every MRs arbitrary custom links could be configured. Links support templates - params
+are taken from project configurations by their name (i.e. user is not limited with fields
+required for program to function, arbitrary fields for links could be added too).
+
+Given there is the following `project_links` section in config:
+```yaml
+project_links:
+  - display_name: 'Some site'
+    template: https://test.com/{id}/{other_id}
+  - display_name: 'Other site'
+    template: https://foo.bar/{id}
+```
+And the following project configuration in some group:
+```yaml
+      - name: my-project
+        id: 34675721
+        other_id: 6789
+```
+You will get two additional links in UI:
+- `https://test.com/34675721/6789`
+- `https://foo.bar/34675721`
+
+If some field in project config is not specified, link using that field will be omitted.
+
 
 ## Development notes
 

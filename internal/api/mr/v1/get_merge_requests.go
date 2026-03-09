@@ -7,6 +7,7 @@ import (
 
 	"github.com/samber/lo"
 	api "github.com/vlanse/glmr/internal/pb/mr/v1"
+	"github.com/vlanse/glmr/internal/service/linker"
 	"github.com/vlanse/glmr/internal/service/mr"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -90,6 +91,14 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 							HeadPipeline: &api.GetMergeRequestsResponse_MergeRequest_Pipeline{
 								WebUrl: item.Pipeline.WebURL,
 							},
+							Links: lo.Map(s.linkerSvc.GetProjectLinks(item.Project.ID),
+								func(item linker.Link, _ int) *api.GetMergeRequestsResponse_MergeRequest_Link {
+									return &api.GetMergeRequestsResponse_MergeRequest_Link{
+										DisplayName: item.DisplayName,
+										Url:         item.Link,
+									}
+								},
+							),
 						}
 					},
 				),

@@ -12,6 +12,7 @@ import (
 	versionV1 "github.com/vlanse/glmr/internal/api/version/v1"
 	"github.com/vlanse/glmr/internal/service/editor"
 	"github.com/vlanse/glmr/internal/service/gitlab"
+	"github.com/vlanse/glmr/internal/service/linker"
 	"github.com/vlanse/glmr/internal/service/mr"
 	"github.com/vlanse/glmr/internal/util/config"
 	"google.golang.org/grpc"
@@ -27,6 +28,7 @@ type App struct {
 	gitlabSvc *gitlab.Service
 	mrSvc     *mr.Service
 	editorSvc *editor.Service
+	linkerSvc *linker.Service
 }
 
 func NewApp() *App {
@@ -70,6 +72,8 @@ func (a *App) initServices(_ context.Context) error {
 
 	a.editorSvc = editor.NewService()
 
+	a.linkerSvc = linker.NewService()
+
 	a.updateConfig(cfg)
 
 	return nil
@@ -81,7 +85,8 @@ func (a *App) initAPI(ctx context.Context) error {
 
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
-	if err := mrV1.New(a.mrSvc, a.editorSvc).Register(ctx, a.grpcServer, a.mux, grpcServerEndpoint, opts); err != nil {
+	if err := mrV1.New(a.mrSvc, a.editorSvc, a.linkerSvc).
+		Register(ctx, a.grpcServer, a.mux, grpcServerEndpoint, opts); err != nil {
 		return fmt.Errorf("init mr v1 API: %w", err)
 	}
 
@@ -145,4 +150,27 @@ func (a *App) updateConfig(cfg Config) {
 	a.editorSvc.UpdateSettings(editorSettings)
 
 	a.gitlabSvc.UpdateSettings(cfg.Gitlab.URL, cfg.Gitlab.Token)
+
+	a.linkerSvc.UpdateSettings(linker.Settings{
+		Templates: lo.Map(cfg.ProjectLinks, func(item ProjectLink, _ int) linker.Link {
+			return linker.Link{
+				DisplayName: item.DisplayName,
+				Link:        item.Template,
+			}
+		}),
+		Projects: func() []linker.Project {
+			var res []linker.Project
+			for _, g := range cfg.Groups {
+				for _, p := range g.Projects {
+					if len(p.Path) > 0 {
+						res = append(res, linker.Project{
+							ID:    p.ID,
+							Attrs: p.Attrs,
+						})
+					}
+				}
+			}
+			return res
+		}(),
+	})
 }

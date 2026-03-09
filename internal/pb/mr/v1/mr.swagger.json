@@ -136,6 +136,13 @@
         },
         "headPipeline": {
           "$ref": "#/definitions/MergeRequestPipeline"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/MergeRequestLink"
+          }
         }
       }
     },
@@ -225,6 +232,17 @@
       "type": "object",
       "properties": {
         "key": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "MergeRequestLink": {
+      "type": "object",
+      "properties": {
+        "displayName": {
           "type": "string"
         },
         "url": {
