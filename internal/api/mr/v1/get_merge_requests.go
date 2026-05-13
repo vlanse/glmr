@@ -46,6 +46,12 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 								Id:   item.Project.ID,
 								Name: item.Project.Name,
 								Url:  item.Project.WebURL,
+								Plugins: lo.Map(item.Project.Plugins, func(item mr.PluginResult, _ int) *api.GetMergeRequestsResponse_Plugin {
+									return &api.GetMergeRequestsResponse_Plugin{
+										Html: item.HTML,
+										Text: item.PlainText,
+									}
+								}),
 							},
 							Url: item.URL,
 							Author: &api.GetMergeRequestsResponse_MergeRequest_User{

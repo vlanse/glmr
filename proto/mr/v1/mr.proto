@@ -25,6 +25,11 @@ message GetMergeRequestsRequest {
 }
 
 message GetMergeRequestsResponse {
+  message Plugin {
+    string html = 1;
+    string text = 2;
+  }
+
   message MergeRequest {
     message User {
       string username = 1;
@@ -38,6 +43,7 @@ message GetMergeRequestsResponse {
       int64 id = 1;
       string name = 2;
       string url = 3;
+      repeated Plugin plugins = 4;
     }
 
     message Status {
@@ -74,11 +80,6 @@ message GetMergeRequestsResponse {
       string url = 2;
     }
 
-    message Plugin {
-      string html = 1;
-      string text = 2;
-    }
-
     Project project = 1;
     string url = 2;
     string description = 3;
@@ -93,7 +94,6 @@ message GetMergeRequestsResponse {
     DiffStatsSummary diffStatsSummary = 12;
     Pipeline headPipeline = 13;
     repeated Link links = 14;
-    repeated Plugin plugins = 15;
   }
 
   message Group {

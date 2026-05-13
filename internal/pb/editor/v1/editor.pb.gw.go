@@ -71,7 +71,7 @@ func RegisterEditorHandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mr.v1.Editor/OpenProject", runtime.WithHTTPPathPattern("/editor/v1/OpenProject"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/editor.v1.Editor/OpenProject", runtime.WithHTTPPathPattern("/editor/v1/OpenProject"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -129,7 +129,7 @@ func RegisterEditorHandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/mr.v1.Editor/OpenProject", runtime.WithHTTPPathPattern("/editor/v1/OpenProject"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/editor.v1.Editor/OpenProject", runtime.WithHTTPPathPattern("/editor/v1/OpenProject"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

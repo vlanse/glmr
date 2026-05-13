@@ -8,6 +8,7 @@ import (
 
 	"github.com/samber/lo"
 	"github.com/vlanse/glmr/internal/service/gitlab"
+	"github.com/vlanse/glmr/plugin"
 )
 
 func (s *Service) enrichProjectMRDiscussions(ctx context.Context, projects []Project) ([]Project, error) {
@@ -67,6 +68,49 @@ func (s *Service) enrichProjectMRDiscussions(ctx context.Context, projects []Pro
 					}
 				},
 			)
+		}
+	}
+
+	return projects, nil
+}
+
+func (s *Service) invokePluginsPerProject(ctx context.Context, starred []gitlab.Project, projects []Project) ([]Project, error) {
+	projectSettings := s.settings.GetAllProjectSettings(starred)
+
+	pluginResults := make(map[int64]plugin.OutputPerProject, len(projectSettings))
+	var mx sync.Mutex
+	group := s.pool.NewGroup()
+	for _, pl := range s.plugins {
+		for _, ps := range projectSettings {
+			group.SubmitErr(
+				func() error {
+					res, err := pl.InvokePerProject(ctx, plugin.InputPerProject{
+						ProjectID:    ps.ID,
+						ProjectName:  ps.Name,
+						ProjectAttrs: ps.Attrs,
+					})
+					if err != nil {
+						return err
+					}
+					mx.Lock()
+					defer mx.Unlock()
+					pluginResults[ps.ID] = res
+					return nil
+				},
+			)
+		}
+	}
+
+	if err := group.Wait(); err != nil {
+		return nil, fmt.Errorf("enrich project information by plugins invocation: %w", err)
+	}
+
+	for i, p := range projects {
+		if pr, found := pluginResults[p.ID]; found {
+			projects[i].Plugins = append(projects[i].Plugins, PluginResult{
+				HTML:      pr.HTML,
+				PlainText: pr.PlainText,
+			})
 		}
 	}
 

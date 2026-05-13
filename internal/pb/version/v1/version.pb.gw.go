@@ -71,7 +71,7 @@ func RegisterVersionHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mr.v1.Version/GetVersion", runtime.WithHTTPPathPattern("/version/v1/GetVersion"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/version.v1.Version/GetVersion", runtime.WithHTTPPathPattern("/version/v1/GetVersion"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -129,7 +129,7 @@ func RegisterVersionHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/mr.v1.Version/GetVersion", runtime.WithHTTPPathPattern("/version/v1/GetVersion"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/version.v1.Version/GetVersion", runtime.WithHTTPPathPattern("/version/v1/GetVersion"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

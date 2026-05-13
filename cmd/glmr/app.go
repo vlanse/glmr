@@ -88,7 +88,7 @@ func (a *App) initServices(_ context.Context) error {
 
 	a.gitlabSvc = gitlab.NewService(cfg.Gitlab.URL, cfg.Gitlab.Token)
 
-	a.mrSvc = mr.NewService(a.gitlabSvc)
+	a.mrSvc = mr.NewService(a.gitlabSvc, a.plugins)
 
 	a.editorSvc = editor.NewService()
 
@@ -140,8 +140,9 @@ func (a *App) updateConfig(cfg Config) {
 				Name: item.Name,
 				Projects: lo.Map(item.Projects, func(item Project, _ int) mr.ProjectSettings {
 					return mr.ProjectSettings{
-						Name: item.Name,
-						ID:   item.ID,
+						Name:  item.Name,
+						ID:    item.ID,
+						Attrs: item.Attrs,
 					}
 				}),
 			}

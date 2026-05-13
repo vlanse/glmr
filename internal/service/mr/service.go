@@ -12,6 +12,7 @@ import (
 	"github.com/alitto/pond/v2"
 	"github.com/samber/lo"
 	"github.com/vlanse/glmr/internal/service/gitlab"
+	"github.com/vlanse/glmr/plugin"
 )
 
 const (
@@ -35,13 +36,16 @@ type Service struct {
 
 	projectsByID    map[int64]gitlab.Project
 	starredProjects []gitlab.Project
+
+	plugins []*plugin.Plugin
 }
 
-func NewService(gitlabSvc *gitlab.Service) *Service {
+func NewService(gitlabSvc *gitlab.Service, plugins []*plugin.Plugin) *Service {
 	return &Service{
 		gitlabSvc:    gitlabSvc,
 		pool:         pond.NewPool(poolWorkerCount),
 		projectsByID: make(map[int64]gitlab.Project),
+		plugins:      plugins,
 	}
 }
 
@@ -85,6 +89,10 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 	}
 
 	projects := s.settings.GetProjects(starredProjects)
+
+	if projects, err = s.invokePluginsPerProject(ctx, starredProjects, projects); err != nil {
+		return nil, err
+	}
 
 	if projects, err = s.enrichProjectInfo(ctx, projects); err != nil {
 		return nil, err

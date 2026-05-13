@@ -7,3 +7,4 @@ test.md
 ./glmr
 glmr-config.yaml
 /bin/
+/plugin/example/glmr-plugin-example.so

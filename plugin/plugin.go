@@ -1,32 +1,37 @@
 package plugin
 
 import (
+	"context"
 	"fmt"
 	"plugin"
 )
 
 const (
-	methodName = "GLMRLoadProjectInfoV1"
+	methodNamePerProject = "GLMRPluginInvokePerProjectV1"
 )
 
-type Input struct {
-	ProjectIID int64
-	Name       string
-	Params     map[string]string
+type InputPerProject struct {
+	ProjectName  string
+	ProjectID    int64
+	ProjectAttrs map[string]any
 }
 
-type Output struct {
+type OutputPerProject struct {
 	HTML      string
 	PlainText string
 }
 
-type Method func(Input) (Output, error)
+type MethodPerProject func(context.Context, InputPerProject) (OutputPerProject, error)
 
 type Plugin struct {
-	Name   string
-	Method *Method
+	Name string
 
-	pl *plugin.Plugin
+	methodPerProject *MethodPerProject
+	pl               *plugin.Plugin
+}
+
+func (p *Plugin) InvokePerProject(ctx context.Context, in InputPerProject) (OutputPerProject, error) {
+	return (*p.methodPerProject)(ctx, in)
 }
 
 func Load(name, path string) (*Plugin, error) {
@@ -36,17 +41,17 @@ func Load(name, path string) (*Plugin, error) {
 		return nil, fmt.Errorf("failed to open plugin: %w", err)
 	}
 
-	m, err := p.pl.Lookup(methodName)
+	m, err := p.pl.Lookup(methodNamePerProject)
 	if err != nil {
 		return nil, fmt.Errorf("failed to lookup plugin method: %w", err)
 	}
 
 	var ok bool
-	if p.Method, ok = m.(*Method); !ok {
+	if p.methodPerProject, ok = m.(*MethodPerProject); !ok {
 		return nil, fmt.Errorf("invalid plugin method signature")
 	}
 
-	if _, err = (*p.Method)(Input{ProjectIID: -1}); err != nil {
+	if _, err = (*p.methodPerProject)(context.Background(), InputPerProject{ProjectID: -1}); err != nil {
 		return nil, fmt.Errorf("plugin internal error: %w", err)
 	}
 

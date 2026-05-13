@@ -107,12 +107,12 @@ var File_editor_v1_editor_proto protoreflect.FileDescriptor
 
 const file_editor_v1_editor_proto_rawDesc = "" +
 	"\n" +
-	"\x16editor/v1/editor.proto\x12\x05mr.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"2\n" +
+	"\x16editor/v1/editor.proto\x12\teditor.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"2\n" +
 	"\x12OpenProjectRequest\x12\x1c\n" +
 	"\tprojectId\x18\x01 \x01(\x03R\tprojectId\"\x15\n" +
-	"\x13OpenProjectResponse2q\n" +
-	"\x06Editor\x12g\n" +
-	"\vOpenProject\x12\x19.mr.v1.OpenProjectRequest\x1a\x1a.mr.v1.OpenProjectResponse\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/editor/v1/OpenProjectB(Z&github.com/vlanse/glmr/proto/editor/v1b\x06proto3"
+	"\x13OpenProjectResponse2y\n" +
+	"\x06Editor\x12o\n" +
+	"\vOpenProject\x12\x1d.editor.v1.OpenProjectRequest\x1a\x1e.editor.v1.OpenProjectResponse\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/editor/v1/OpenProjectB(Z&github.com/vlanse/glmr/proto/editor/v1b\x06proto3"
 
 var (
 	file_editor_v1_editor_proto_rawDescOnce sync.Once
@@ -128,12 +128,12 @@ func file_editor_v1_editor_proto_rawDescGZIP() []byte {
 
 var file_editor_v1_editor_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_editor_v1_editor_proto_goTypes = []any{
-	(*OpenProjectRequest)(nil),  // 0: mr.v1.OpenProjectRequest
-	(*OpenProjectResponse)(nil), // 1: mr.v1.OpenProjectResponse
+	(*OpenProjectRequest)(nil),  // 0: editor.v1.OpenProjectRequest
+	(*OpenProjectResponse)(nil), // 1: editor.v1.OpenProjectResponse
 }
 var file_editor_v1_editor_proto_depIdxs = []int32{
-	0, // 0: mr.v1.Editor.OpenProject:input_type -> mr.v1.OpenProjectRequest
-	1, // 1: mr.v1.Editor.OpenProject:output_type -> mr.v1.OpenProjectResponse
+	0, // 0: editor.v1.Editor.OpenProject:input_type -> editor.v1.OpenProjectRequest
+	1, // 1: editor.v1.Editor.OpenProject:output_type -> editor.v1.OpenProjectResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

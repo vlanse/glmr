@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Editor_OpenProject_FullMethodName = "/mr.v1.Editor/OpenProject"
+	Editor_OpenProject_FullMethodName = "/editor.v1.Editor/OpenProject"
 )
 
 // EditorClient is the client API for Editor service.
@@ -108,7 +108,7 @@ func _Editor_OpenProject_Handler(srv interface{}, ctx context.Context, dec func(
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Editor_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "mr.v1.Editor",
+	ServiceName: "editor.v1.Editor",
 	HandlerType: (*EditorServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

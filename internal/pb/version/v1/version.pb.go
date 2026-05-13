@@ -175,18 +175,19 @@ var File_version_v1_version_proto protoreflect.FileDescriptor
 
 const file_version_v1_version_proto_rawDesc = "" +
 	"\n" +
-	"\x18version/v1/version.proto\x12\x05mr.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x13\n" +
-	"\x11GetVersionRequest\"\xd4\x01\n" +
+	"\x18version/v1/version.proto\x12\n" +
+	"version.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x13\n" +
+	"\x11GetVersionRequest\"\xd9\x01\n" +
 	"\x12GetVersionResponse\x12&\n" +
-	"\x0ecurrentVersion\x18\x01 \x01(\tR\x0ecurrentVersion\x128\n" +
-	"\x06update\x18\x02 \x01(\v2 .mr.v1.GetVersionResponse.UpdateR\x06update\x1a\\\n" +
+	"\x0ecurrentVersion\x18\x01 \x01(\tR\x0ecurrentVersion\x12=\n" +
+	"\x06update\x18\x02 \x01(\v2%.version.v1.GetVersionResponse.UpdateR\x06update\x1a\\\n" +
 	"\x06Update\x12\x18\n" +
 	"\aversion\x18\x01 \x01(\tR\aversion\x12\"\n" +
 	"\freleaseNotes\x18\x02 \x01(\tR\freleaseNotes\x12\x14\n" +
-	"\x05error\x18\x03 \x01(\tR\x05error2o\n" +
-	"\aVersion\x12d\n" +
+	"\x05error\x18\x03 \x01(\tR\x05error2y\n" +
+	"\aVersion\x12n\n" +
 	"\n" +
-	"GetVersion\x12\x18.mr.v1.GetVersionRequest\x1a\x19.mr.v1.GetVersionResponse\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/version/v1/GetVersionB$Z\"github.com/vlanse/glmr/proto/mr/v1b\x06proto3"
+	"GetVersion\x12\x1d.version.v1.GetVersionRequest\x1a\x1e.version.v1.GetVersionResponse\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/version/v1/GetVersionB$Z\"github.com/vlanse/glmr/proto/mr/v1b\x06proto3"
 
 var (
 	file_version_v1_version_proto_rawDescOnce sync.Once
@@ -202,14 +203,14 @@ func file_version_v1_version_proto_rawDescGZIP() []byte {
 
 var file_version_v1_version_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_version_v1_version_proto_goTypes = []any{
-	(*GetVersionRequest)(nil),         // 0: mr.v1.GetVersionRequest
-	(*GetVersionResponse)(nil),        // 1: mr.v1.GetVersionResponse
-	(*GetVersionResponse_Update)(nil), // 2: mr.v1.GetVersionResponse.Update
+	(*GetVersionRequest)(nil),         // 0: version.v1.GetVersionRequest
+	(*GetVersionResponse)(nil),        // 1: version.v1.GetVersionResponse
+	(*GetVersionResponse_Update)(nil), // 2: version.v1.GetVersionResponse.Update
 }
 var file_version_v1_version_proto_depIdxs = []int32{
-	2, // 0: mr.v1.GetVersionResponse.update:type_name -> mr.v1.GetVersionResponse.Update
-	0, // 1: mr.v1.Version.GetVersion:input_type -> mr.v1.GetVersionRequest
-	1, // 2: mr.v1.Version.GetVersion:output_type -> mr.v1.GetVersionResponse
+	2, // 0: version.v1.GetVersionResponse.update:type_name -> version.v1.GetVersionResponse.Update
+	0, // 1: version.v1.Version.GetVersion:input_type -> version.v1.GetVersionRequest
+	1, // 2: version.v1.Version.GetVersion:output_type -> version.v1.GetVersionResponse
 	2, // [2:3] is the sub-list for method output_type
 	1, // [1:2] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

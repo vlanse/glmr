@@ -6,8 +6,9 @@ import (
 )
 
 type ProjectSettings struct {
-	Name string
-	ID   int64
+	Name  string
+	ID    int64
+	Attrs map[string]any
 }
 
 type ProjectGroupSettings struct {
@@ -62,4 +63,28 @@ func (s Settings) GetProjects(starred []gitlab.Project) []Project {
 		})
 	}
 	return projects
+}
+
+func (s Settings) GetAllProjectSettings(starred []gitlab.Project) []ProjectSettings {
+	var projects []ProjectSettings
+	var userAddedIDs []int64
+	for _, group := range s.Groups {
+		for _, project := range group.Projects {
+			projects = append(projects, project)
+			userAddedIDs = append(userAddedIDs, project.ID)
+		}
+	}
+
+	for _, p := range starred {
+		if lo.Contains(userAddedIDs, p.ID) {
+			continue
+		}
+		projects = append(projects, ProjectSettings{
+			ID:   p.ID,
+			Name: p.Name,
+		})
+	}
+	return lo.UniqBy(projects, func(item ProjectSettings) int64 {
+		return item.ID
+	})
 }

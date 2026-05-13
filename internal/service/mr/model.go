@@ -72,6 +72,11 @@ type DiffStatsSummary struct {
 	FileCount int64
 }
 
+type PluginResult struct {
+	HTML      string
+	PlainText string
+}
+
 type MergeRequest struct {
 	IID              int64 // "short" gitlab ID
 	Project          Project
@@ -104,6 +109,7 @@ type Project struct {
 	PathWithNamespace string
 	MergeRequests     []MergeRequest
 	ApprovalRules     []ApprovalRule
+	Plugins           []PluginResult
 }
 
 type Summary struct {
