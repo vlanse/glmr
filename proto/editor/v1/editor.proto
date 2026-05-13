@@ -1,5 +1,5 @@
 syntax = "proto3";
-package mr.v1;
+package editor.v1;
 option go_package = "github.com/vlanse/glmr/proto/editor/v1";
 
 import "google/api/annotations.proto";

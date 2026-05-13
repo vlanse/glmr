@@ -23,6 +23,12 @@ type ProjectLink struct {
 	Template    string `yaml:"template"`
 }
 
+type Plugin struct {
+	Name    string
+	Path    string
+	Enabled bool
+}
+
 type Config struct {
 	Gitlab struct {
 		URL   string `yaml:"url"`
@@ -42,4 +48,6 @@ type Config struct {
 	Groups []Group `yaml:"groups"`
 
 	ProjectLinks []ProjectLink `yaml:"project_links"`
+
+	Plugins []Plugin `yaml:"plugins"`
 }

@@ -13,7 +13,8 @@ Client-side web application for viewing Gitlab MRs of interest.
 - editor integration: open projects in local editor right from UI
 - JIRA integration: open tickets linked to MRs
 - starred projects could be included as special separate group
-- [custom links](#custom-links)
+- [custom links](#custom-links) for simple integration cases
+- plugin support for advanced integration cases
 
 ## Installation
 
@@ -36,6 +37,11 @@ jira: # optional section for JIRA integration
   
 editor: # optional section for editor integration
   cmd: "/bin/my-favourite-editor {project_path}" # pay attention to {project_path}, it will be replaced by actual project path
+  
+plugins:
+  - name: my-plugin
+    path: '/some/path/plugin.so'
+    enabled: true
 
 show_starred: true # add if you want to include starred projects as separate group
 

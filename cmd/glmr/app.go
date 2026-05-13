@@ -15,6 +15,7 @@ import (
 	"github.com/vlanse/glmr/internal/service/linker"
 	"github.com/vlanse/glmr/internal/service/mr"
 	"github.com/vlanse/glmr/internal/util/config"
+	"github.com/vlanse/glmr/plugin"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -29,6 +30,7 @@ type App struct {
 	mrSvc     *mr.Service
 	editorSvc *editor.Service
 	linkerSvc *linker.Service
+	plugins   []*plugin.Plugin
 }
 
 func NewApp() *App {
@@ -38,6 +40,7 @@ func NewApp() *App {
 func (a *App) Run(ctx context.Context) error {
 	initializers := []func(ctx context.Context) error{
 		a.initConfig,
+		a.initPlugins,
 		a.initServices,
 		a.initAPI,
 		a.startBackgroundWorkers,
@@ -59,6 +62,23 @@ func (a *App) initConfig(_ context.Context) error {
 		return err
 	}
 	a.cfgProvider.ChangeCallback = a.updateConfig
+
+	return nil
+}
+
+func (a *App) initPlugins(_ context.Context) error {
+	cfg := a.cfgProvider.GetConfig()
+	for _, p := range cfg.Plugins {
+		if !p.Enabled {
+			continue
+		}
+
+		pl, err := plugin.Load(p.Name, p.Path)
+		if err != nil {
+			return err
+		}
+		a.plugins = append(a.plugins, pl)
+	}
 
 	return nil
 }
