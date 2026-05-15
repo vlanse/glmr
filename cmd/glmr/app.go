@@ -66,14 +66,14 @@ func (a *App) initConfig(_ context.Context) error {
 	return nil
 }
 
-func (a *App) initPlugins(_ context.Context) error {
+func (a *App) initPlugins(ctx context.Context) error {
 	cfg := a.cfgProvider.GetConfig()
 	for _, p := range cfg.Plugins {
 		if !p.Enabled {
 			continue
 		}
 
-		pl, err := plugin.Load(p.Name, p.Path)
+		pl, err := plugin.Load(ctx, p.Name, p.Path)
 		if err != nil {
 			return err
 		}
