@@ -4,6 +4,7 @@ main
 *.db
 *.db.*
 test.md
-./glmr
+/glmr
 glmr-config.yaml
 /bin/
+/plugin
