@@ -1,5 +1,5 @@
 # GLMR
-v0.0.21
+v0.0.22
 
 aka **G**it**L**ab **M**erge **R**equests
 
