@@ -33,99 +33,48 @@ func (c *client) updateSettings(settings Settings) {
 	c.settings = settings
 }
 
-func (c *client) getSettings() Settings {
-	c.mx.RLock()
-	defer c.mx.RUnlock()
-
-	return c.settings
-}
-
 func (c *client) getProject(ctx context.Context, projectID int64) (Project, error) {
 	settings := c.getSettings()
 
-	data, err := request.GET(
-		ctx,
+	return fetchJSON[Project](ctx, "project info",
 		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d", settings.BaseURL, projectID)),
 		map[string]string{
 			tokenHeader: settings.Token,
 		},
 	)
-	if err != nil {
-		return Project{}, fmt.Errorf("failed to get project info from gitlab: %w", err)
-	}
-
-	var res Project
-	if err = json.Unmarshal(data, &res); err != nil {
-		return Project{}, fmt.Errorf("failed to unmarshal project info: %w", err)
-	}
-
-	return res, nil
 }
 
 func (c *client) getStarredProjects(ctx context.Context, userID int64) ([]Project, error) {
 	settings := c.getSettings()
 
-	data, err := request.GET(
-		ctx,
+	return fetchJSON[[]Project](ctx, "starred projects",
 		request.MustURL(fmt.Sprintf("%s/api/v4/users/%d/starred_projects", settings.BaseURL, userID)),
 		map[string]string{
 			tokenHeader: settings.Token,
 		},
 	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get starred projects from gitlab: %w", err)
-	}
-
-	var res []Project
-	if err = json.Unmarshal(data, &res); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal starred projects info: %w", err)
-	}
-
-	return res, nil
 }
 
 func (c *client) getApprovalRules(ctx context.Context, projectID int64) ([]ApprovalRule, error) {
 	settings := c.getSettings()
 
-	data, err := request.GET(
-		ctx,
+	return fetchJSON[[]ApprovalRule](ctx, "project approval rules",
 		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d/approval_rules", settings.BaseURL, projectID)),
 		map[string]string{
 			tokenHeader: settings.Token,
 		},
 	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get project approval rules from gitlab: %w", err)
-	}
-
-	res := make([]ApprovalRule, 0)
-	if err = json.Unmarshal(data, &res); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal project approval rules: %w", err)
-	}
-
-	return res, nil
 }
 
 func (c *client) getCurrentUser(ctx context.Context) (User, error) {
 	settings := c.getSettings()
 
-	data, err := request.GET(
-		ctx,
+	return fetchJSON[User](ctx, "current user info",
 		request.MustURL(fmt.Sprintf("%s/api/v4/user", settings.BaseURL)),
 		map[string]string{
 			tokenHeader: settings.Token,
 		},
 	)
-	if err != nil {
-		return User{}, fmt.Errorf("failed to get current user info from gitlab: %w", err)
-	}
-
-	var res User
-	if err = json.Unmarshal(data, &res); err != nil {
-		return User{}, fmt.Errorf("failed to unmarshal current user info: %w", err)
-	}
-
-	return res, nil
 }
 
 func (c *client) getMergeRequestDiscussions(ctx context.Context, projectID, mergeRequestIID int64) ([]Discussion, error) {
@@ -134,8 +83,7 @@ func (c *client) getMergeRequestDiscussions(ctx context.Context, projectID, merg
 	res := make([]Discussion, 0)
 	const perPage = 100
 	for page := 1; ; page++ {
-		data, err := request.GET(
-			ctx,
+		pageRes, err := fetchJSON[[]Discussion](ctx, "merge request discussions",
 			request.MustURL(
 				fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/discussions", settings.BaseURL, projectID, mergeRequestIID),
 				"per_page", strconv.Itoa(perPage), "page", strconv.Itoa(page),
@@ -145,12 +93,7 @@ func (c *client) getMergeRequestDiscussions(ctx context.Context, projectID, merg
 			},
 		)
 		if err != nil {
-			return nil, fmt.Errorf("failed to get merge request discussions from gitlab: %w", err)
-		}
-
-		pageRes := make([]Discussion, 0)
-		if err = json.Unmarshal(data, &pageRes); err != nil {
-			return nil, fmt.Errorf("failed to unmarshal merge request discussions info: %w", err)
+			return nil, err
 		}
 
 		res = append(res, pageRes...)
@@ -201,4 +144,25 @@ func (c *client) getProjectMergeRequestsGQ(ctx context.Context, projectFullPath 
 	}
 
 	return res.Data.Project.MergeRequests.Nodes, nil
+}
+
+func (c *client) getSettings() Settings {
+	c.mx.RLock()
+	defer c.mx.RUnlock()
+
+	return c.settings
+}
+
+func fetchJSON[T any](ctx context.Context, what, url string, headers map[string]string) (T, error) {
+	var res T
+
+	data, err := request.GET(ctx, url, headers)
+	if err != nil {
+		return res, fmt.Errorf("failed to get %s from gitlab: %w", what, err)
+	}
+	if err = json.Unmarshal(data, &res); err != nil {
+		return res, fmt.Errorf("failed to unmarshal %s: %w", what, err)
+	}
+
+	return res, nil
 }

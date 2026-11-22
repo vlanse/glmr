@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	grpcServerEndpoint = "0.0.0.0:10002"
+	grpcServerEndpoint = "localhost:10002"
 	httpServerEndpoint = "localhost:8082"
 )
 
