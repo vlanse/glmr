@@ -115,7 +115,7 @@ func fillIssues(jiraURL string, projects []Project) []Project {
 	}
 	for i, project := range projects {
 		for j, mr := range project.MergeRequests {
-			issueKeys := jiraIssueRx.FindAllStringSubmatch(mr.Description, -1)
+			issueKeys := jiraIssueRx.FindAllStringSubmatch(mr.Title, -1)
 			var keys []string
 			for _, issueKey := range issueKeys {
 				if len(issueKey) < 2 {

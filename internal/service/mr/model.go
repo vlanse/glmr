@@ -77,7 +77,7 @@ type MergeRequest struct {
 	IID              int64 // "short" gitlab ID
 	Project          Project
 	CreatedAt        time.Time
-	Description      string
+	Title            string
 	URL              string
 	Draft            bool
 	Author           User

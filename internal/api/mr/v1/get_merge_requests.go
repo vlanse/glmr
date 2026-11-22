@@ -40,7 +40,9 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 					item.MergeRequests,
 					func(item mr.MergeRequest, _ int) *api.GetMergeRequestsResponse_MergeRequest {
 						return &api.GetMergeRequestsResponse_MergeRequest{
-							Description: item.Description,
+							// the proto field is historically named "description",
+							// but it carries the MR title (the FE depends on this)
+							Description: item.Title,
 							Iid:         item.IID,
 							Project: &api.GetMergeRequestsResponse_MergeRequest_Project{
 								Id:   item.Project.ID,

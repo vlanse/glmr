@@ -142,12 +142,12 @@ func (s *Service) enrichProjectInfo(ctx context.Context, currentUserName string,
 
 		projects[i].MergeRequests = lo.Map(mrByProject[p.ID], func(mr gitlab.MergeRequestGQ, _ int) MergeRequest {
 			return MergeRequest{
-				IID:         mr.IID,
-				Project:     p,
-				CreatedAt:   mr.CreatedAt,
-				Description: mr.Title,
-				URL:         mr.WebURL,
-				Draft:       mr.Draft,
+				IID:       mr.IID,
+				Project:   p,
+				CreatedAt: mr.CreatedAt,
+				Title:     mr.Title,
+				URL:       mr.WebURL,
+				Draft:     mr.Draft,
 				Author: User{
 					Username:  mr.Author.Username,
 					AvatarURL: s.fixURL(mr.Author.AvatarURL),
