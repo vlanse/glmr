@@ -163,12 +163,10 @@ func (a *App) updateConfig(cfg Config) {
 			var res []linker.Project
 			for _, g := range cfg.Groups {
 				for _, p := range g.Projects {
-					if len(p.Path) > 0 {
-						res = append(res, linker.Project{
-							ID:    p.ID,
-							Attrs: p.Attrs,
-						})
-					}
+					res = append(res, linker.Project{
+						ID:    p.ID,
+						Attrs: p.Attrs,
+					})
 				}
 			}
 			return res
