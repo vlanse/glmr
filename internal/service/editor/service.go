@@ -4,11 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync"
+	"unicode"
 
 	"github.com/samber/lo"
 )
@@ -54,7 +56,7 @@ func (s *Service) OpenProject(_ context.Context, id int64) error {
 		return fmt.Errorf("path to project with ID %d not specified", id)
 	}
 
-	parts := strings.Split(settings.Cmd, " ")
+	parts := splitCmdLine(settings.Cmd)
 	var cmd string
 	var args []string
 	for i, part := range parts {
@@ -80,9 +82,13 @@ func (s *Service) OpenProject(_ context.Context, id int64) error {
 		return fmt.Errorf("start editor on project: %w", err)
 	}
 
-	if err := c.Wait(); err != nil {
-		return fmt.Errorf("start editor on project: %w", err)
-	}
+	// wait editor process without blocking the request handler:
+	// GUI editors stay alive for as long as the IDE is open
+	go func() {
+		if err := c.Wait(); err != nil {
+			log.Printf("editor %q exited with error: %v", cmd, err)
+		}
+	}()
 
 	return nil
 }
@@ -98,4 +104,42 @@ func (s *Service) IsProjectConfigured(id int64) bool {
 		return item.ID == id
 	})
 	return ok
+}
+
+func splitCmdLine(line string) []string {
+	var (
+		parts  []string
+		cur    strings.Builder
+		quote  rune
+		quoted bool
+	)
+
+	flush := func() {
+		if cur.Len() > 0 || quoted {
+			parts = append(parts, cur.String())
+			cur.Reset()
+			quoted = false
+		}
+	}
+
+	for _, r := range line {
+		switch {
+		case quote != 0:
+			if r == quote {
+				quote = 0
+			} else {
+				cur.WriteRune(r)
+			}
+		case r == '"' || r == '\'':
+			quote = r
+			quoted = true
+		case unicode.IsSpace(r):
+			flush()
+		default:
+			cur.WriteRune(r)
+		}
+	}
+	flush()
+
+	return parts
 }

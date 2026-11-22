@@ -56,9 +56,10 @@ func (m *Merger) Content() ([]byte, error) {
 	var res []byte
 	var err error
 
-	info := m.Swagger["info"].(map[string]interface{})
-	info["title"] = m.title
-	info["version"] = ""
+	if info, ok := m.Swagger["info"].(map[string]any); ok {
+		info["title"] = m.title
+		info["version"] = ""
+	}
 
 	if res, err = json.Marshal(m.Swagger); err != nil {
 		return nil, err

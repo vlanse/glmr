@@ -37,7 +37,7 @@ func (c *client) getProject(ctx context.Context, projectID int64) (Project, erro
 	settings := c.getSettings()
 
 	return fetchJSON[Project](ctx, "project info",
-		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d", settings.BaseURL, projectID)),
+		request.WithQuery(fmt.Sprintf("%s/api/v4/projects/%d", settings.BaseURL, projectID)),
 		map[string]string{
 			tokenHeader: settings.Token,
 		},
@@ -48,7 +48,7 @@ func (c *client) getStarredProjects(ctx context.Context, userID int64) ([]Projec
 	settings := c.getSettings()
 
 	return fetchJSON[[]Project](ctx, "starred projects",
-		request.MustURL(fmt.Sprintf("%s/api/v4/users/%d/starred_projects", settings.BaseURL, userID)),
+		request.WithQuery(fmt.Sprintf("%s/api/v4/users/%d/starred_projects", settings.BaseURL, userID)),
 		map[string]string{
 			tokenHeader: settings.Token,
 		},
@@ -59,7 +59,7 @@ func (c *client) getApprovalRules(ctx context.Context, projectID int64) ([]Appro
 	settings := c.getSettings()
 
 	return fetchJSON[[]ApprovalRule](ctx, "project approval rules",
-		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d/approval_rules", settings.BaseURL, projectID)),
+		request.WithQuery(fmt.Sprintf("%s/api/v4/projects/%d/approval_rules", settings.BaseURL, projectID)),
 		map[string]string{
 			tokenHeader: settings.Token,
 		},
@@ -70,7 +70,7 @@ func (c *client) getCurrentUser(ctx context.Context) (User, error) {
 	settings := c.getSettings()
 
 	return fetchJSON[User](ctx, "current user info",
-		request.MustURL(fmt.Sprintf("%s/api/v4/user", settings.BaseURL)),
+		request.WithQuery(fmt.Sprintf("%s/api/v4/user", settings.BaseURL)),
 		map[string]string{
 			tokenHeader: settings.Token,
 		},
@@ -84,7 +84,7 @@ func (c *client) getMergeRequestDiscussions(ctx context.Context, projectID, merg
 	const perPage = 100
 	for page := 1; ; page++ {
 		pageRes, err := fetchJSON[[]Discussion](ctx, "merge request discussions",
-			request.MustURL(
+			request.WithQuery(
 				fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/discussions", settings.BaseURL, projectID, mergeRequestIID),
 				"per_page", strconv.Itoa(perPage), "page", strconv.Itoa(page),
 			),
@@ -119,7 +119,7 @@ func (c *client) getProjectMergeRequestsGQ(ctx context.Context, projectFullPath 
 	settings := c.getSettings()
 
 	data, err := request.POST(ctx,
-		request.MustURL(fmt.Sprintf("%s/api/graphql", settings.BaseURL)),
+		request.WithQuery(fmt.Sprintf("%s/api/graphql", settings.BaseURL)),
 		map[string]string{
 			authHeader:     fmt.Sprintf("Bearer %s", settings.Token),
 			"Content-Type": "application/json",

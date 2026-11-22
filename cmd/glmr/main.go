@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 )
 
@@ -13,6 +13,6 @@ func init() {
 func main() {
 	app := NewApp()
 	if err := app.Run(context.Background()); err != nil {
-		fmt.Println(err.Error())
+		log.Fatal(err)
 	}
 }

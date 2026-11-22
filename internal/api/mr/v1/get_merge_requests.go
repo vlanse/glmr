@@ -21,7 +21,7 @@ func (s *Service) GetMergeRequests(ctx context.Context, req *api.GetMergeRequest
 		DoNotShowDrafts:  req.GetFilter().GetDoNotShowDrafts(),
 	})
 	if err != nil {
-		return nil, status.Error(codes.FailedPrecondition, err.Error())
+		return nil, status.Error(codes.Unavailable, err.Error())
 	}
 
 	res := &api.GetMergeRequestsResponse{

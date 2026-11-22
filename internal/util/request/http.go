@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -22,25 +23,23 @@ func POST(ctx context.Context, url string, headers map[string]string, body []byt
 	return doRequest(ctx, http.MethodPost, url, headers, io.NopCloser(bytes.NewBuffer(body)))
 }
 
-func MustURL(hostWithSchemaAndPath string, queryKV ...string) string {
-	u, err := url.Parse(hostWithSchemaAndPath)
-	if err != nil {
-		panic(fmt.Errorf("bad URL %q: %w", hostWithSchemaAndPath, err))
-	}
-
+func WithQuery(base string, queryKV ...string) string {
 	var k string
-	q := u.Query()
+	q := url.Values{}
 	for i, v := range queryKV {
 		if i%2 == 0 {
 			k = v
 		} else {
 			q.Add(k, v)
 		}
-
 	}
 
-	u.RawQuery = q.Encode()
-	return u.String()
+	sep := "?"
+	if strings.Contains(base, "?") {
+		sep = "&"
+	}
+
+	return base + sep + q.Encode()
 }
 
 func doRequest(ctx context.Context, method string, url string, headers map[string]string, body io.ReadCloser) ([]byte, error) {

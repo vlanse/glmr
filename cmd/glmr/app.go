@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/samber/lo"
@@ -106,11 +105,7 @@ func (a *App) initAPI(ctx context.Context) error {
 
 func (a *App) startBackgroundWorkers(_ context.Context) error {
 	fmt.Printf("Web interface available at http://%s\n", httpServerEndpoint)
-	if err := runServer(a.grpcServer, a.mux); err != nil {
-		log.Fatal(err)
-	}
-
-	return nil
+	return runServer(a.grpcServer, a.mux)
 }
 
 func (a *App) updateConfig(cfg Config) {

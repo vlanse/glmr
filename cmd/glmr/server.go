@@ -43,14 +43,20 @@ func serveGrpcGateway(mux *runtime.ServeMux) error {
 		if !d.IsDir() && strings.HasSuffix(path, "swagger.json") {
 			data, err := sw.ReadFile(path)
 			if err != nil {
+				log.Printf("read embedded swagger file %s: %v", path, err)
 				return nil
 			}
-			_ = swaggerMerger.AddFile(bytes.NewReader(data))
+			if err = swaggerMerger.AddFile(bytes.NewReader(data)); err != nil {
+				log.Printf("merge swagger file %s: %v", path, err)
+			}
 		}
 		return nil
 	})
 
-	swaggerData, _ := swaggerMerger.Content()
+	swaggerData, err := swaggerMerger.Content()
+	if err != nil {
+		log.Printf("build merged swagger: %v", err)
+	}
 	if err := mux.HandlePath(
 		http.MethodGet,
 		"/swagger/swagger.json",

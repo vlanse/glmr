@@ -22,6 +22,8 @@ const (
 
 	pipelineFailedStatus  = "failed"
 	pipelineSuccessStatus = "success"
+
+	outdatedAfter = 10 * 24 * time.Hour
 )
 
 var jiraIssueRx = regexp.MustCompile(`\[([A-Z]+-\d+)]`)
@@ -221,7 +223,7 @@ func fillStatuses(projects []Project) []Project {
 		for j, mr := range project.MergeRequests {
 			status := Status{
 				PipelineFailed: mr.Pipeline.Status == pipelineFailedStatus,
-				Outdated:       time.Since(mr.CreatedAt) > time.Hour*24*10,
+				Outdated:       time.Since(mr.CreatedAt) > outdatedAfter,
 				Conflict:       mr.Status.Conflict,
 			}
 			status.Ready = mr.Pipeline.Status == pipelineSuccessStatus && !status.Conflict

@@ -36,7 +36,7 @@ type Note struct {
 	Resolved   bool
 	System     bool
 	CreatedAt  time.Time
-	ResolveAt  time.Time
+	ResolvedAt time.Time
 	Body       string
 }
 
