@@ -29,7 +29,7 @@ make generate            # regenerate protobuf code (needs ./bin on PATH, target
 ## Architecture
 
 - `cmd/glmr/app.go` wires everything: config → services (`internal/service/{gitlab,mr,editor,linker}`) → gRPC/gateway API (`internal/api/*/v1`) → server.
-- Two listeners (defined in `cmd/glmr/server.go`): gRPC on `0.0.0.0:10002`, HTTP gateway + embedded UI + Swagger UI (`/docs/`) on `localhost:8082`.
+- Two listeners (defined in `cmd/glmr/server.go`): gRPC on `localhost:10002`, HTTP gateway + embedded UI + Swagger UI (`/docs/`) on `localhost:8082`.
 - API flow: `.proto` → generated stubs in `internal/pb` → handlers in `internal/api/<svc>/v1` → services in `internal/service/<svc>`.
 
 ## Config
