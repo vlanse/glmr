@@ -2,23 +2,27 @@ package gitlab
 
 import "context"
 
+type Settings struct {
+	BaseURL string
+	Token   string
+}
+
 type Service struct {
 	cl *client
 }
 
-func NewService(baseURL, token string) *Service {
+func NewService(settings Settings) *Service {
 	return &Service{
-		cl: newClient(baseURL, token),
+		cl: newClient(settings),
 	}
 }
 
-func (s *Service) UpdateSettings(baseURL, token string) {
-	s.cl.baseURL = baseURL
-	s.cl.token = token
+func (s *Service) UpdateSettings(settings Settings) {
+	s.cl.updateSettings(settings)
 }
 
 func (s *Service) GetBaseURL() string {
-	return s.cl.baseURL
+	return s.cl.getSettings().BaseURL
 }
 
 func (s *Service) GetProject(ctx context.Context, projectID int64) (Project, error) {

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"sync"
 
 	"github.com/vlanse/glmr/internal/util/request"
 )
@@ -15,26 +16,41 @@ const (
 )
 
 type client struct {
-	baseURL string
-	token   string
+	mx       sync.RWMutex
+	settings Settings
 }
 
-func newClient(baseURL string, token string) *client {
+func newClient(settings Settings) *client {
 	return &client{
-		baseURL: baseURL,
-		token:   token,
+		settings: settings,
 	}
 }
 
+func (c *client) updateSettings(settings Settings) {
+	c.mx.Lock()
+	defer c.mx.Unlock()
+
+	c.settings = settings
+}
+
+func (c *client) getSettings() Settings {
+	c.mx.RLock()
+	defer c.mx.RUnlock()
+
+	return c.settings
+}
+
 func (c *client) getProjectMergeRequests(ctx context.Context, projectID int64) ([]MergeRequest, error) {
+	settings := c.getSettings()
+
 	data, err := request.GET(
 		ctx,
 		request.MustURL(
-			fmt.Sprintf("%s/api/v4/projects/%d/merge_requests", c.baseURL, projectID),
+			fmt.Sprintf("%s/api/v4/projects/%d/merge_requests", settings.BaseURL, projectID),
 			"per_page", "100", "page", "1", "state", "opened",
 		),
 		map[string]string{
-			tokenHeader: c.token,
+			tokenHeader: settings.Token,
 		},
 	)
 	if err != nil {
@@ -50,11 +66,13 @@ func (c *client) getProjectMergeRequests(ctx context.Context, projectID int64) (
 }
 
 func (c *client) getProject(ctx context.Context, projectID int64) (Project, error) {
+	settings := c.getSettings()
+
 	data, err := request.GET(
 		ctx,
-		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d", c.baseURL, projectID)),
+		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d", settings.BaseURL, projectID)),
 		map[string]string{
-			tokenHeader: c.token,
+			tokenHeader: settings.Token,
 		},
 	)
 	if err != nil {
@@ -70,11 +88,13 @@ func (c *client) getProject(ctx context.Context, projectID int64) (Project, erro
 }
 
 func (c *client) getStarredProjects(ctx context.Context, userID int64) ([]Project, error) {
+	settings := c.getSettings()
+
 	data, err := request.GET(
 		ctx,
-		request.MustURL(fmt.Sprintf("%s/api/v4/users/%d/starred_projects", c.baseURL, userID)),
+		request.MustURL(fmt.Sprintf("%s/api/v4/users/%d/starred_projects", settings.BaseURL, userID)),
 		map[string]string{
-			tokenHeader: c.token,
+			tokenHeader: settings.Token,
 		},
 	)
 	if err != nil {
@@ -90,11 +110,13 @@ func (c *client) getStarredProjects(ctx context.Context, userID int64) ([]Projec
 }
 
 func (c *client) getApprovalRules(ctx context.Context, projectID int64) ([]ApprovalRule, error) {
+	settings := c.getSettings()
+
 	data, err := request.GET(
 		ctx,
-		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d/approval_rules", c.baseURL, projectID)),
+		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d/approval_rules", settings.BaseURL, projectID)),
 		map[string]string{
-			tokenHeader: c.token,
+			tokenHeader: settings.Token,
 		},
 	)
 	if err != nil {
@@ -110,11 +132,13 @@ func (c *client) getApprovalRules(ctx context.Context, projectID int64) ([]Appro
 }
 
 func (c *client) getCurrentUser(ctx context.Context) (User, error) {
+	settings := c.getSettings()
+
 	data, err := request.GET(
 		ctx,
-		request.MustURL(fmt.Sprintf("%s/api/v4/user", c.baseURL)),
+		request.MustURL(fmt.Sprintf("%s/api/v4/user", settings.BaseURL)),
 		map[string]string{
-			tokenHeader: c.token,
+			tokenHeader: settings.Token,
 		},
 	)
 	if err != nil {
@@ -130,11 +154,13 @@ func (c *client) getCurrentUser(ctx context.Context) (User, error) {
 }
 
 func (c *client) getMergeRequestsApprovals(ctx context.Context, projectID, mrIID int64) (Approval, error) {
+	settings := c.getSettings()
+
 	data, err := request.GET(
 		ctx,
-		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/approvals", c.baseURL, projectID, mrIID)),
+		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/approvals", settings.BaseURL, projectID, mrIID)),
 		map[string]string{
-			tokenHeader: c.token,
+			tokenHeader: settings.Token,
 		},
 	)
 	if err != nil {
@@ -150,17 +176,19 @@ func (c *client) getMergeRequestsApprovals(ctx context.Context, projectID, mrIID
 }
 
 func (c *client) getMergeRequestDiscussions(ctx context.Context, projectID, mergeRequestIID int64) ([]Discussion, error) {
+	settings := c.getSettings()
+
 	res := make([]Discussion, 0)
 	const perPage = 100
 	for page := 1; ; page++ {
 		data, err := request.GET(
 			ctx,
 			request.MustURL(
-				fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/discussions", c.baseURL, projectID, mergeRequestIID),
+				fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/discussions", settings.BaseURL, projectID, mergeRequestIID),
 				"per_page", strconv.Itoa(perPage), "page", strconv.Itoa(page),
 			),
 			map[string]string{
-				tokenHeader: c.token,
+				tokenHeader: settings.Token,
 			},
 		)
 		if err != nil {
@@ -182,14 +210,16 @@ func (c *client) getMergeRequestDiscussions(ctx context.Context, projectID, merg
 }
 
 func (c *client) getMergeRequestCommits(ctx context.Context, projectID, mergeRequestIID int64) ([]Commit, error) {
+	settings := c.getSettings()
+
 	data, err := request.GET(
 		ctx,
 		request.MustURL(
-			fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/commits", c.baseURL, projectID, mergeRequestIID),
+			fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/commits", settings.BaseURL, projectID, mergeRequestIID),
 			"per_page", "100", "page", "1",
 		),
 		map[string]string{
-			tokenHeader: c.token,
+			tokenHeader: settings.Token,
 		},
 	)
 	if err != nil {
@@ -205,11 +235,13 @@ func (c *client) getMergeRequestCommits(ctx context.Context, projectID, mergeReq
 }
 
 func (c *client) getMergeRequestInfo(ctx context.Context, projectID, mergeRequestIID int64) (MergeRequestInfo, error) {
+	settings := c.getSettings()
+
 	data, err := request.GET(
 		ctx,
-		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d", c.baseURL, projectID, mergeRequestIID)),
+		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d", settings.BaseURL, projectID, mergeRequestIID)),
 		map[string]string{
-			tokenHeader: c.token,
+			tokenHeader: settings.Token,
 		},
 	)
 	if err != nil {
@@ -235,10 +267,12 @@ func (c *client) getProjectMergeRequestsGQ(ctx context.Context, projectFullPath 
 		return nil, fmt.Errorf("failed to marshal projects merge request: %w", err)
 	}
 
+	settings := c.getSettings()
+
 	data, err := request.POST(ctx,
-		request.MustURL(fmt.Sprintf("%s/api/graphql", c.baseURL)),
+		request.MustURL(fmt.Sprintf("%s/api/graphql", settings.BaseURL)),
 		map[string]string{
-			authHeader:     fmt.Sprintf("Bearer %s", c.token),
+			authHeader:     fmt.Sprintf("Bearer %s", settings.Token),
 			"Content-Type": "application/json",
 		},
 		reqData,

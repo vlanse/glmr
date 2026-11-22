@@ -66,7 +66,10 @@ func (a *App) initConfig(_ context.Context) error {
 func (a *App) initServices(_ context.Context) error {
 	cfg := a.cfgProvider.GetConfig()
 
-	a.gitlabSvc = gitlab.NewService(cfg.Gitlab.URL, cfg.Gitlab.Token)
+	a.gitlabSvc = gitlab.NewService(gitlab.Settings{
+		BaseURL: cfg.Gitlab.URL,
+		Token:   cfg.Gitlab.Token,
+	})
 
 	a.mrSvc = mr.NewService(a.gitlabSvc)
 
@@ -150,7 +153,10 @@ func (a *App) updateConfig(cfg Config) {
 	}
 	a.editorSvc.UpdateSettings(editorSettings)
 
-	a.gitlabSvc.UpdateSettings(cfg.Gitlab.URL, cfg.Gitlab.Token)
+	a.gitlabSvc.UpdateSettings(gitlab.Settings{
+		BaseURL: cfg.Gitlab.URL,
+		Token:   cfg.Gitlab.Token,
+	})
 
 	a.linkerSvc.UpdateSettings(linker.Settings{
 		Templates: lo.Map(cfg.ProjectLinks, func(item ProjectLink, _ int) linker.Link {

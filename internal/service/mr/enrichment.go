@@ -10,7 +10,7 @@ import (
 	"github.com/vlanse/glmr/internal/service/gitlab"
 )
 
-func (s *Service) enrichProjectMRDiscussions(ctx context.Context, projects []Project) ([]Project, error) {
+func (s *Service) enrichProjectMRDiscussions(ctx context.Context, currentUserName string, projects []Project) ([]Project, error) {
 	var mx sync.Mutex
 	discussionsByMR := make(map[int64]map[int64][]gitlab.Discussion, len(projects))
 
@@ -49,13 +49,13 @@ func (s *Service) enrichProjectMRDiscussions(ctx context.Context, projects []Pro
 									Username:  item.Author.Username,
 									AvatarURL: item.Author.AvatarURL,
 									WebURL:    item.Author.WebURL,
-									IsMe:      s.currentUser.Username == item.Author.Username,
+									IsMe:      currentUserName == item.Author.Username,
 								},
 								ResolvedBy: User{
 									Username:  item.ResolvedBy.Username,
 									AvatarURL: item.ResolvedBy.AvatarURL,
 									WebURL:    item.ResolvedBy.WebURL,
-									IsMe:      s.currentUser.Username == item.ResolvedBy.Username,
+									IsMe:      currentUserName == item.ResolvedBy.Username,
 								},
 								Resolved:   item.Resolved,
 								Resolvable: item.Resolvable,
@@ -74,7 +74,7 @@ func (s *Service) enrichProjectMRDiscussions(ctx context.Context, projects []Pro
 	return projects, nil
 }
 
-func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]Project, error) {
+func (s *Service) enrichProjectInfo(ctx context.Context, currentUserName string, projects []Project) ([]Project, error) {
 	allProjectIDs := lo.Map(projects, func(item Project, _ int) int64 {
 		return item.ID
 	})
@@ -84,12 +84,7 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 	for _, projectID := range allProjectIDs {
 		group.SubmitErr(
 			func() error {
-				if found := func() bool {
-					mx.Lock()
-					defer mx.Unlock()
-					_, found := s.projectsByID[projectID]
-					return found
-				}(); found {
+				if _, found := s.getCachedProject(projectID); found {
 					return nil
 				}
 
@@ -97,9 +92,8 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 				if err != nil {
 					return err
 				}
-				mx.Lock()
-				defer mx.Unlock()
-				s.projectsByID[projectID] = project
+
+				s.cacheProject(project)
 				return nil
 			},
 		)
@@ -108,10 +102,12 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 		return nil, fmt.Errorf("collect projects: %w", err)
 	}
 
+	projectsByID := s.getProjectsSnapshot()
+
 	mrByProject := make(map[int64][]gitlab.MergeRequestGQ, len(projects))
 	rulesByProject := make(map[int64][]gitlab.ApprovalRule, len(projects))
 	group = s.pool.NewGroup()
-	for _, p := range s.projectsByID {
+	for _, p := range projectsByID {
 		group.SubmitErr(
 			func() error {
 				mrs, err := s.gitlabSvc.GetProjectMergeRequestsGQ(ctx, p.PathWithNamespace)
@@ -142,7 +138,7 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 	}
 
 	for i, p := range projects {
-		p.WebURL = s.projectsByID[p.ID].WebURL
+		p.WebURL = projectsByID[p.ID].WebURL
 
 		projects[i].MergeRequests = lo.Map(mrByProject[p.ID], func(mr gitlab.MergeRequestGQ, _ int) MergeRequest {
 			return MergeRequest{
@@ -156,7 +152,7 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 					Username:  mr.Author.Username,
 					AvatarURL: s.fixURL(mr.Author.AvatarURL),
 					WebURL:    mr.Author.WebURL,
-					IsMe:      s.currentUser.Username == mr.Author.Username,
+					IsMe:      currentUserName == mr.Author.Username,
 				},
 				Approvals: lo.Map(mr.ApprovedBy.Nodes, func(item gitlab.UserGQ, _ int) Approval {
 					return Approval{
@@ -164,7 +160,7 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 							Username:  item.Username,
 							AvatarURL: s.fixURL(item.AvatarURL),
 							WebURL:    item.WebURL,
-							IsMe:      s.currentUser.Username == item.Username,
+							IsMe:      currentUserName == item.Username,
 						},
 					}
 				}),
@@ -191,7 +187,7 @@ func (s *Service) enrichProjectInfo(ctx context.Context, projects []Project) ([]
 						Username:  item.Username,
 						AvatarURL: item.AvatarURL,
 						WebURL:    item.WebURL,
-						IsMe:      s.currentUser.Username == item.Username,
+						IsMe:      currentUserName == item.Username,
 					}
 				}),
 			}

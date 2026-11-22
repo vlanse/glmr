@@ -3,6 +3,7 @@ package mr
 import (
 	"context"
 	"fmt"
+	"maps"
 	"regexp"
 	"sort"
 	"strings"
@@ -26,15 +27,14 @@ const (
 var jiraIssueRx = regexp.MustCompile(`\[([A-Z]+-\d+)]`)
 
 type Service struct {
-	settings  Settings
+	mx       sync.RWMutex
+	settings Settings
+
 	gitlabSvc *gitlab.Service
 	pool      pond.Pool
 
-	currentUser *User
-	dataMx      sync.Mutex
-
-	projectsByID    map[int64]gitlab.Project
-	starredProjects []gitlab.Project
+	currentUser  *User
+	projectsByID map[int64]gitlab.Project
 }
 
 func NewService(gitlabSvc *gitlab.Service) *Service {
@@ -46,43 +46,23 @@ func NewService(gitlabSvc *gitlab.Service) *Service {
 }
 
 func (s *Service) UpdateSettings(settings Settings) {
-	s.dataMx.Lock()
-	defer s.dataMx.Unlock()
+	s.mx.Lock()
+	defer s.mx.Unlock()
+
 	s.settings = settings
 }
 
 func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeRequestsGroup, error) {
-	var currentUserName string
-	if err := func() error {
-		s.dataMx.Lock()
-		defer s.dataMx.Unlock()
-		if s.currentUser == nil {
-			user, err := s.gitlabSvc.GetCurrentUser(ctx)
-			if err != nil {
-				return fmt.Errorf("could not get current user information: %w", err)
-			}
-			s.currentUser = &User{
-				ID:        user.ID,
-				Username:  user.Username,
-				AvatarURL: user.AvatarURL,
-				WebURL:    user.WebURL,
-			}
-		}
-		currentUserName = s.currentUser.Username
-		return nil
-	}(); err != nil {
+	currentUser, err := s.getCurrentUser(ctx)
+	if err != nil {
 		return nil, err
 	}
 
-	s.dataMx.Lock()
-	settings := s.settings
-	s.dataMx.Unlock()
-
-	var err error
+	settings := s.getSettings()
 
 	var starredProjects []gitlab.Project
 	if settings.ShowStarred {
-		starredProjects, err = s.gitlabSvc.GetStarredProjects(ctx, s.currentUser.ID)
+		starredProjects, err = s.gitlabSvc.GetStarredProjects(ctx, currentUser.ID)
 		if err != nil {
 			return nil, fmt.Errorf("could not get starred projects: %w", err)
 		}
@@ -90,11 +70,11 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 
 	projects := settings.GetProjects(starredProjects)
 
-	if projects, err = s.enrichProjectInfo(ctx, projects); err != nil {
+	if projects, err = s.enrichProjectInfo(ctx, currentUser.Username, projects); err != nil {
 		return nil, err
 	}
 
-	if projects, err = s.enrichProjectMRDiscussions(ctx, projects); err != nil {
+	if projects, err = s.enrichProjectMRDiscussions(ctx, currentUser.Username, projects); err != nil {
 		return nil, err
 	}
 
@@ -102,19 +82,19 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 
 	projects = fillOwners(projects)
 
-	projects = sortApprovers(currentUserName, projects)
+	projects = sortApprovers(currentUser.Username, projects)
 
 	projects = fillStatuses(projects)
 
 	projects = countDiscussions(settings.Bots, projects)
 
-	projects = setApprovedBefore(currentUserName, projects)
+	projects = setApprovedBefore(currentUser.Username, projects)
 
 	groups := groupMergeRequests(projects)
 
 	groups = fillGroupSummaries(groups)
 
-	groups = filterMergeRequests(groups, currentUserName, filter)
+	groups = filterMergeRequests(groups, currentUser.Username, filter)
 
 	groups = fillFilteredGroupSummaries(groups)
 
@@ -358,5 +338,63 @@ func groupMergeRequests(projects []Project) []MergeRequestsGroup {
 		}
 		res = append(res, mrg)
 	}
+	return res
+}
+
+func (s *Service) getSettings() Settings {
+	s.mx.RLock()
+	defer s.mx.RUnlock()
+
+	return s.settings
+}
+
+func (s *Service) getCurrentUser(ctx context.Context) (*User, error) {
+	s.mx.RLock()
+	user := s.currentUser
+	s.mx.RUnlock()
+	if user != nil {
+		return user, nil
+	}
+
+	u, err := s.gitlabSvc.GetCurrentUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not get current user information: %w", err)
+	}
+
+	user = &User{
+		ID:        u.ID,
+		Username:  u.Username,
+		AvatarURL: u.AvatarURL,
+		WebURL:    u.WebURL,
+	}
+
+	s.mx.Lock()
+	s.currentUser = user
+	s.mx.Unlock()
+
+	return user, nil
+}
+
+func (s *Service) getCachedProject(projectID int64) (gitlab.Project, bool) {
+	s.mx.RLock()
+	defer s.mx.RUnlock()
+
+	project, found := s.projectsByID[projectID]
+	return project, found
+}
+
+func (s *Service) cacheProject(project gitlab.Project) {
+	s.mx.Lock()
+	defer s.mx.Unlock()
+
+	s.projectsByID[project.ID] = project
+}
+
+func (s *Service) getProjectsSnapshot() map[int64]gitlab.Project {
+	s.mx.RLock()
+	defer s.mx.RUnlock()
+
+	res := make(map[int64]gitlab.Project, len(s.projectsByID))
+	maps.Copy(res, s.projectsByID)
 	return res
 }

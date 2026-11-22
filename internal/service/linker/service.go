@@ -1,8 +1,13 @@
 package linker
 
-import "github.com/samber/lo"
+import (
+	"sync"
+
+	"github.com/samber/lo"
+)
 
 type Service struct {
+	mx       sync.RWMutex
 	settings Settings
 }
 
@@ -11,15 +16,17 @@ func NewService() *Service {
 }
 
 func (s *Service) GetProjectLinks(projectID int64) []Link {
-	project, found := lo.Find(s.settings.Projects, func(item Project) bool {
+	settings := s.getSettings()
+
+	project, found := lo.Find(settings.Projects, func(item Project) bool {
 		return item.ID == projectID
 	})
 	if !found {
 		return nil
 	}
 
-	res := make([]Link, 0, len(s.settings.Templates))
-	for _, t := range s.settings.Templates {
+	res := make([]Link, 0, len(settings.Templates))
+	for _, t := range settings.Templates {
 		formatted := formatLink(t.Link, projectID, project.Attrs)
 		if len(formatted) == 0 {
 			continue
@@ -33,5 +40,15 @@ func (s *Service) GetProjectLinks(projectID int64) []Link {
 }
 
 func (s *Service) UpdateSettings(settings Settings) {
+	s.mx.Lock()
+	defer s.mx.Unlock()
+
 	s.settings = settings
+}
+
+func (s *Service) getSettings() Settings {
+	s.mx.RLock()
+	defer s.mx.RUnlock()
+
+	return s.settings
 }
