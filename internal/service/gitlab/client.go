@@ -40,31 +40,6 @@ func (c *client) getSettings() Settings {
 	return c.settings
 }
 
-func (c *client) getProjectMergeRequests(ctx context.Context, projectID int64) ([]MergeRequest, error) {
-	settings := c.getSettings()
-
-	data, err := request.GET(
-		ctx,
-		request.MustURL(
-			fmt.Sprintf("%s/api/v4/projects/%d/merge_requests", settings.BaseURL, projectID),
-			"per_page", "100", "page", "1", "state", "opened",
-		),
-		map[string]string{
-			tokenHeader: settings.Token,
-		},
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get merge requests from gitlab: %w", err)
-	}
-
-	res := make([]MergeRequest, 0)
-	if err = json.Unmarshal(data, &res); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal merge requests info: %w", err)
-	}
-
-	return res, nil
-}
-
 func (c *client) getProject(ctx context.Context, projectID int64) (Project, error) {
 	settings := c.getSettings()
 
@@ -153,28 +128,6 @@ func (c *client) getCurrentUser(ctx context.Context) (User, error) {
 	return res, nil
 }
 
-func (c *client) getMergeRequestsApprovals(ctx context.Context, projectID, mrIID int64) (Approval, error) {
-	settings := c.getSettings()
-
-	data, err := request.GET(
-		ctx,
-		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/approvals", settings.BaseURL, projectID, mrIID)),
-		map[string]string{
-			tokenHeader: settings.Token,
-		},
-	)
-	if err != nil {
-		return Approval{}, fmt.Errorf("failed to get MR approvals info from gitlab: %w", err)
-	}
-
-	var res Approval
-	if err = json.Unmarshal(data, &res); err != nil {
-		return Approval{}, fmt.Errorf("failed to unmarshal MR approval info rules: %w", err)
-	}
-
-	return res, nil
-}
-
 func (c *client) getMergeRequestDiscussions(ctx context.Context, projectID, mergeRequestIID int64) ([]Discussion, error) {
 	settings := c.getSettings()
 
@@ -204,53 +157,6 @@ func (c *client) getMergeRequestDiscussions(ctx context.Context, projectID, merg
 		if len(pageRes) < perPage {
 			break
 		}
-	}
-
-	return res, nil
-}
-
-func (c *client) getMergeRequestCommits(ctx context.Context, projectID, mergeRequestIID int64) ([]Commit, error) {
-	settings := c.getSettings()
-
-	data, err := request.GET(
-		ctx,
-		request.MustURL(
-			fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/commits", settings.BaseURL, projectID, mergeRequestIID),
-			"per_page", "100", "page", "1",
-		),
-		map[string]string{
-			tokenHeader: settings.Token,
-		},
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get merge request commits from gitlab: %w", err)
-	}
-
-	res := make([]Commit, 0)
-	if err = json.Unmarshal(data, &res); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal merge request commits info: %w", err)
-	}
-
-	return res, nil
-}
-
-func (c *client) getMergeRequestInfo(ctx context.Context, projectID, mergeRequestIID int64) (MergeRequestInfo, error) {
-	settings := c.getSettings()
-
-	data, err := request.GET(
-		ctx,
-		request.MustURL(fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d", settings.BaseURL, projectID, mergeRequestIID)),
-		map[string]string{
-			tokenHeader: settings.Token,
-		},
-	)
-	if err != nil {
-		return MergeRequestInfo{}, fmt.Errorf("failed to get merge request info from gitlab: %w", err)
-	}
-
-	var res MergeRequestInfo
-	if err = json.Unmarshal(data, &res); err != nil {
-		return MergeRequestInfo{}, fmt.Errorf("failed to unmarshal merge request info: %w", err)
 	}
 
 	return res, nil

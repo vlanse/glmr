@@ -1,7 +1,9 @@
 package config
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -41,23 +43,32 @@ func MakeProvider[ConfigT any](configFilename string) (*Provider[ConfigT], error
 	}
 
 	for _, pathGetter := range pathPriority {
-		var path string
-		if path, err = pathGetter(); err == nil {
-			p.path = filepath.Join(path, configFilename)
-
-			if err = p.loadConfig(); err != nil {
-				return nil, fmt.Errorf("error opening config file: %w", err)
-			}
-
-			if err = p.watcher.Add(p.path); err != nil {
-				return nil, fmt.Errorf("error adding config file to watcher: %w", err)
-			}
-
-			p.watchForChanges()
-			return p, nil
+		path, err := pathGetter()
+		if err != nil {
+			continue
 		}
+
+		p.path = filepath.Join(path, configFilename)
+
+		if err := p.loadConfig(); err != nil {
+			if errors.Is(err, fs.ErrNotExist) {
+				continue // not in this directory, try the next one
+			}
+			return nil, fmt.Errorf("error reading config file %s: %w", p.path, err)
+		}
+
+		if err := p.watcher.Add(p.path); err != nil {
+			return nil, fmt.Errorf("error adding config file to watcher: %w", err)
+		}
+
+		p.watchForChanges()
+		return p, nil
 	}
-	return nil, fmt.Errorf("could not open config file: %w", err)
+
+	return nil, fmt.Errorf(
+		"could not find config file %q in the working directory, executable directory or home directory",
+		configFilename,
+	)
 }
 
 type Provider[ConfigT any] struct {
@@ -76,6 +87,7 @@ func (p *Provider[ConfigT]) loadConfig() error {
 	if err != nil {
 		return err
 	}
+	defer func() { _ = cfgFile.Close() }()
 
 	var cfg ConfigT
 	d := yaml.NewDecoder(cfgFile)

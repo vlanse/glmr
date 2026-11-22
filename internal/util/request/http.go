@@ -7,7 +7,12 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 )
+
+var httpClient = &http.Client{
+	Timeout: 30 * time.Second,
+}
 
 func GET(ctx context.Context, url string, headers map[string]string) ([]byte, error) {
 	return doRequest(ctx, http.MethodGet, url, headers, nil)
@@ -39,17 +44,20 @@ func MustURL(hostWithSchemaAndPath string, queryKV ...string) string {
 }
 
 func doRequest(ctx context.Context, method string, url string, headers map[string]string, body io.ReadCloser) ([]byte, error) {
-	req, _ := http.NewRequestWithContext(ctx, method, url, nil)
+	req, err := http.NewRequestWithContext(ctx, method, url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("build %s request to %s: %w", method, url, err)
+	}
 	for k, v := range headers {
 		req.Header.Add(k, v)
 	}
 
 	req.Body = body
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 
 	if err != nil {
-		return nil, fmt.Errorf("GET request to %s error: %w", url, err)
+		return nil, fmt.Errorf("%s request to %s error: %w", method, url, err)
 	}
 
 	defer func() { _ = resp.Body.Close() }()
