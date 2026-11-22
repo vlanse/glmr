@@ -30,6 +30,9 @@ Example:
 gitlab:
   url: "gitlab instance URL, i.e. https://gitlab.com"
   token: "your gitlab access token"
+  # optional, comments of these users are excluded from comment counters
+  # typical case is filtering bots comments, therefore option name
+  bots: [renovate-bot, danger-bot] 
 
 jira: # optional section for JIRA integration
   url: "https://jira.domain"

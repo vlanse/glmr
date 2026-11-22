@@ -25,8 +25,9 @@ type ProjectLink struct {
 
 type Config struct {
 	Gitlab struct {
-		URL   string `yaml:"url"`
-		Token string `yaml:"token"`
+		URL   string   `yaml:"url"`
+		Token string   `yaml:"token"`
+		Bots  []string `yaml:"bots"`
 	} `yaml:"gitlab"`
 
 	JIRA struct {

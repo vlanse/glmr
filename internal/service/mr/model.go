@@ -34,6 +34,7 @@ type Note struct {
 	ResolvedBy User
 	Resolvable bool
 	Resolved   bool
+	System     bool
 	CreatedAt  time.Time
 	ResolveAt  time.Time
 	Body       string

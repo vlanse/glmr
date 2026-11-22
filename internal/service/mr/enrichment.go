@@ -59,6 +59,7 @@ func (s *Service) enrichProjectMRDiscussions(ctx context.Context, projects []Pro
 								},
 								Resolved:   item.Resolved,
 								Resolvable: item.Resolvable,
+								System:     item.System,
 								CreatedAt:  item.CreatedAt,
 								ResolveAt:  item.ResolvedAt,
 								Body:       item.Body,

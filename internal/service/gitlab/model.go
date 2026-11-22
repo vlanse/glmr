@@ -58,6 +58,7 @@ type Note struct {
 	Type       string    `json:"type"`
 	Resolvable bool      `json:"resolvable"`
 	Resolved   bool      `json:"resolved"`
+	System     bool      `json:"system"`
 	Author     User      `json:"author"`
 	ResolvedBy User      `json:"resolved_by"`
 	Body       string    `json:"body"`

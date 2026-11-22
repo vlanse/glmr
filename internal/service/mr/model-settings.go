@@ -35,6 +35,7 @@ type Settings struct {
 	Groups      []ProjectGroupSettings
 	JIRA        JIRA
 	ShowStarred bool
+	Bots        []string
 }
 
 func (s Settings) GetProjects(starred []gitlab.Project) []Project {

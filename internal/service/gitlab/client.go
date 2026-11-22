@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/vlanse/glmr/internal/util/request"
 )
@@ -149,23 +150,32 @@ func (c *client) getMergeRequestsApprovals(ctx context.Context, projectID, mrIID
 }
 
 func (c *client) getMergeRequestDiscussions(ctx context.Context, projectID, mergeRequestIID int64) ([]Discussion, error) {
-	data, err := request.GET(
-		ctx,
-		request.MustURL(
-			fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/discussions", c.baseURL, projectID, mergeRequestIID),
-			"per_page", "100", "page", "1", "state", "opened",
-		),
-		map[string]string{
-			tokenHeader: c.token,
-		},
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get merge request discussions from gitlab: %w", err)
-	}
-
 	res := make([]Discussion, 0)
-	if err = json.Unmarshal(data, &res); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal merge request discussions info: %w", err)
+	const perPage = 100
+	for page := 1; ; page++ {
+		data, err := request.GET(
+			ctx,
+			request.MustURL(
+				fmt.Sprintf("%s/api/v4/projects/%d/merge_requests/%d/discussions", c.baseURL, projectID, mergeRequestIID),
+				"per_page", strconv.Itoa(perPage), "page", strconv.Itoa(page),
+			),
+			map[string]string{
+				tokenHeader: c.token,
+			},
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get merge request discussions from gitlab: %w", err)
+		}
+
+		pageRes := make([]Discussion, 0)
+		if err = json.Unmarshal(data, &pageRes); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal merge request discussions info: %w", err)
+		}
+
+		res = append(res, pageRes...)
+		if len(pageRes) < perPage {
+			break
+		}
 	}
 
 	return res, nil

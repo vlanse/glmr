@@ -127,6 +127,7 @@ func (a *App) updateConfig(cfg Config) {
 			}
 		}),
 		ShowStarred: cfg.ShowStarred,
+		Bots:        cfg.Gitlab.Bots,
 	}
 	a.mrSvc.UpdateSettings(mrSettings)
 

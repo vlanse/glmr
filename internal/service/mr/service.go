@@ -74,17 +74,21 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 		return nil, err
 	}
 
+	s.dataMx.Lock()
+	settings := s.settings
+	s.dataMx.Unlock()
+
 	var err error
 
 	var starredProjects []gitlab.Project
-	if s.settings.ShowStarred {
+	if settings.ShowStarred {
 		starredProjects, err = s.gitlabSvc.GetStarredProjects(ctx, s.currentUser.ID)
 		if err != nil {
 			return nil, fmt.Errorf("could not get starred projects: %w", err)
 		}
 	}
 
-	projects := s.settings.GetProjects(starredProjects)
+	projects := settings.GetProjects(starredProjects)
 
 	if projects, err = s.enrichProjectInfo(ctx, projects); err != nil {
 		return nil, err
@@ -94,7 +98,7 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 		return nil, err
 	}
 
-	projects = s.fillIssues(projects)
+	projects = fillIssues(settings.JIRA.URL, projects)
 
 	projects = fillOwners(projects)
 
@@ -102,7 +106,7 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 
 	projects = fillStatuses(projects)
 
-	projects = countDiscussions(projects)
+	projects = countDiscussions(settings.Bots, projects)
 
 	projects = setApprovedBefore(currentUserName, projects)
 
@@ -123,8 +127,8 @@ func (s *Service) GetMergeRequests(ctx context.Context, filter Filter) ([]MergeR
 	return groups, nil
 }
 
-func (s *Service) fillIssues(projects []Project) []Project {
-	if len(s.settings.JIRA.URL) == 0 {
+func fillIssues(jiraURL string, projects []Project) []Project {
+	if len(jiraURL) == 0 {
 		return projects
 	}
 	for i, project := range projects {
@@ -142,7 +146,7 @@ func (s *Service) fillIssues(projects []Project) []Project {
 				keys = append(keys, key)
 				projects[i].MergeRequests[j].Issues = append(projects[i].MergeRequests[j].Issues, Issue{
 					Key: key,
-					URL: fmt.Sprintf("%s/browse/%s", s.settings.JIRA.URL, key),
+					URL: fmt.Sprintf("%s/browse/%s", jiraURL, key),
 				})
 			}
 		}
@@ -252,18 +256,27 @@ func fillStatuses(projects []Project) []Project {
 	return projects
 }
 
-func countDiscussions(projects []Project) []Project {
+func countDiscussions(bots []string, projects []Project) []Project {
 	for i, project := range projects {
 		for j, mr := range project.MergeRequests {
 			var resolved, unresolved int
 			for _, d := range mr.Discussions {
+				threadResolvable := lo.ContainsBy(d.Notes, func(n Note) bool {
+					return n.Resolvable
+				})
 				for _, n := range d.Notes {
-					if !n.Resolvable {
+					if n.System || lo.Contains(bots, n.Author.Username) {
 						continue
 					}
-					if n.Resolved {
-						resolved++
-					} else {
+					if n.Resolvable {
+						if n.Resolved {
+							resolved++
+						} else {
+							unresolved++
+						}
+						continue
+					}
+					if !threadResolvable {
 						unresolved++
 					}
 				}
